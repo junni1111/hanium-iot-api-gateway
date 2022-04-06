@@ -1,6 +1,6 @@
 # IoT API Gateway
 
---- 
+---
 
 ## Description
 
@@ -8,7 +8,7 @@
 
 ## Environment
 
-- Npm
+- Npm 6.14.13
 - Mac os
 - IntelliJ IDEA
 
@@ -34,5 +34,4 @@
 
 ### Check api gateway running
 
-<pre>http://localhost:7777/api-spec/</pre>
-
+[Test Page](http://localhost:7777/api-spec/)
