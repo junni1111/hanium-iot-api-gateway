@@ -9,7 +9,7 @@
 ## Environment
 
 - Npm 6.14.13
-- Mac os
+- Mac OS
 - IntelliJ IDEA
 
 ## Setup
