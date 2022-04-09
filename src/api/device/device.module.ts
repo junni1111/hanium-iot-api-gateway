@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
-import { DeviceService } from './device.service';
-import { DeviceController } from './device.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { DEVICE_MICROSERVICE } from '../../util/constants';
 import { device_host, device_port } from '../../config';
+import { TemperatureService } from './temperature.service';
+import { WaterPumpService } from './water-pump.service';
+import { LedService } from './led.service';
+import { MasterService } from './master.service';
+import { SlaveController } from './slave.controller';
+import { MasterController } from './master.controller';
 
 @Module({
   imports: [
@@ -18,7 +22,7 @@ import { device_host, device_port } from '../../config';
       },
     ]),
   ],
-  controllers: [DeviceController],
-  providers: [DeviceService],
+  controllers: [MasterController, SlaveController],
+  providers: [MasterService, TemperatureService, WaterPumpService, LedService],
 })
 export class DeviceModule {}

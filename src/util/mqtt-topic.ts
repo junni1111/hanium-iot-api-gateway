@@ -1,1 +1,1 @@
-export const TEMPERATURE = 'master/+/slave/+/temperature';
+export const TEMPERATURE_TOPIC = 'master/+/slave/+/temperature';
