@@ -10,9 +10,8 @@
 
 - Npm 6.14.13
 - Mac OS
-- IntelliJ IDEA
 
-## Setup
+## Local Dev Setup
 
 ---
 
@@ -20,7 +19,7 @@
 
 <pre>git clone https://github.com/KGESH/hanium-iot-api-gateway.git</pre>
 
-### Go to clone repository directory
+### Go to download path
 
 <pre>cd hanium-iot-api-gateway</pre>
 
@@ -30,7 +29,7 @@
 
 ### Run
 
-<pre>npm start</pre>
+<pre>npm run start:dev</pre>
 
 ### Check api gateway running
 

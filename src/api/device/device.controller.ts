@@ -19,19 +19,14 @@ import { LedConfigDto } from './dto/led-config.dto';
 import { CreateMasterDto } from './dto/create-master.dto';
 import { CreateSlaveDto } from './dto/create-slave.dto';
 import { TEMPERATURE } from '../../util/mqtt-topic';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('api/device')
 export class DeviceController {
   constructor(private readonly deviceService: DeviceService) {}
-  //
-  // @Get('test')
-  // async testGateway(@Res() res: Response, @Body() ledConfigDto: LedConfigDto) {
-  //   const result = await lastValueFrom(this.deviceService.sendMessage(message));
-  //
-  //   return res.status(HttpStatus.OK).json(result);
-  // }
 
   @Get('master/:master_id/slave/:slave_id/state')
+  @ApiTags('led')
   async getSlaveState(
     @Res() res: Response,
     @Param('master_id') masterId: number,
@@ -91,6 +86,7 @@ export class DeviceController {
   @Post('slave/config/led')
   async setLedConfig(@Res() res: Response, @Body() ledConfigDto: LedConfigDto) {
     try {
+      console.log(`led config`, ledConfigDto);
       const result: ResponseStatus = await this.deviceService.setLedConfig(
         ledConfigDto,
       );

@@ -5,7 +5,6 @@ import { DEVICE_MICROSERVICE } from '../../util/constants';
 import { catchError, lastValueFrom, map, Observable } from 'rxjs';
 import { ResponseStatus } from './interfaces/response-status';
 import { ESlaveConfigTopic } from '../../util/api-topic';
-import { SlaveConfigDto } from './dto/slave-config.dto';
 import { TemperatureConfigDto } from './dto/temperature-config.dto';
 import { LedConfigDto } from './dto/led-config.dto';
 import { WaterPumpConfigDto } from './dto/water-pump-config.dto';

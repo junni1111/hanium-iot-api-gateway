@@ -30,7 +30,8 @@ async function bootstrap() {
     .setTitle('IoT Gateway API')
     .setDescription('IoT Microservice API 문서입니다')
     .setVersion('1.0.10')
-    .addTag('echo')
+    .addTag('temperature')
+    .addTag('water_pump')
     .addTag('led')
     .build();
 
