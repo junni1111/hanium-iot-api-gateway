@@ -15,6 +15,7 @@ import { CreateSlaveDto } from './dto/create-slave.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { MASTER } from '../../util/constants';
+import { POLLING } from '../../util/api-topic';
 
 @ApiTags(MASTER)
 @Controller('api/device')
@@ -68,23 +69,6 @@ export class MasterController {
     }
   }
 
-  @Post('slave/:master_id/:slave_id')
-  async createSlave(
-    @Res() res: Response,
-    @Param('master_id') masterId: number,
-    @Param('slave_id') slaveId: number,
-  ) {
-    try {
-      const result = await this.masterService.createSlave(
-        new CreateSlaveDto(masterId, slaveId),
-      );
-
-      return res.status(result.status).json(result);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   @Get('optimize/:master_id/:slave_id')
   async optimizeConfig(
     @Res() res: Response,
@@ -107,7 +91,7 @@ export class MasterController {
   async getMasterState(@Param('id') masterId: number, @Res() res: Response) {
     try {
       console.log(`from front: `, masterId);
-      const dto = new DeviceMessageDto('master/+/polling', masterId.toString());
+      const dto = new DeviceMessageDto(POLLING, masterId.toString());
       const result = await lastValueFrom(this.masterService.sendMessage(dto));
 
       return res.status(HttpStatus.OK).json(result);

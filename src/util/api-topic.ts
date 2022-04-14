@@ -5,4 +5,6 @@ export enum ESlaveConfigTopic {
   LED = 'config/led',
 }
 
+export const POLLING = 'master/+/polling';
+
 export const TEMPERATURE_WEEK = 'temperature/week';

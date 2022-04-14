@@ -8,6 +8,7 @@ import { LedService } from './led.service';
 import { MasterService } from './master.service';
 import { SlaveController } from './slave.controller';
 import { MasterController } from './master.controller';
+import { UtilityController } from './utility.controller';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { MasterController } from './master.controller';
       },
     ]),
   ],
-  controllers: [MasterController, SlaveController],
+  controllers: [MasterController, SlaveController, UtilityController],
   providers: [MasterService, TemperatureService, WaterPumpService, LedService],
 })
 export class DeviceModule {}

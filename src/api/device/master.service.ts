@@ -24,13 +24,16 @@ export class MasterService {
   }
 
   async createSlave(createSlaveDto: CreateSlaveDto): Promise<ResponseStatus> {
+    console.log(`call Create Slave`);
     const payload = new DeviceMessageDto('create/slave', createSlaveDto);
     return lastValueFrom(this.sendMessage(payload));
   }
 
   sendMessage(dto: DeviceMessageDto): Observable<ResponseStatus> {
+    console.log(dto);
     return this.deviceMicroservice.send(dto.messagePattern, dto.payload).pipe(
       map((data: ResponseStatus) => {
+        console.log(data);
         return data;
       }),
       catchError((e) => {

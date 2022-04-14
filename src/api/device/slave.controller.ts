@@ -22,6 +22,7 @@ import { TemperatureService } from './temperature.service';
 import { WaterPumpService } from './water-pump.service';
 import { WATER_PUMP } from '../../util/constants';
 import { LedConfigDto } from './dto/led-config.dto';
+import { CreateSlaveDto } from './dto/create-slave.dto';
 
 @Controller('api/device')
 export class SlaveController {
@@ -82,12 +83,15 @@ export class SlaveController {
   @Post('slave/config/led')
   async setLedConfig(@Res() res: Response, @Body() ledConfigDto: LedConfigDto) {
     try {
+      console.log(`call led config`);
+      console.log(ledConfigDto);
       const result: ResponseStatus = await this.ledService.setLedConfig(
         ledConfigDto,
       );
 
       return res.status(result.status).json(result);
     } catch (e) {
+      console.log(`catch led config error : `, e);
       const response: ResponseStatus = {
         status: HttpStatus.BAD_REQUEST,
         topic: ESlaveConfigTopic.LED,
@@ -128,5 +132,23 @@ export class SlaveController {
 
     const result = await lastValueFrom(this.deviceService.sendMessage(dto));
     return res.status(HttpStatus.OK).json(result);
+  }
+
+  /* Todo: Refactor URL path */
+  @Post('slave/:master_id/:slave_id')
+  async createSlave(
+    @Res() res: Response,
+    @Param('master_id') masterId: number,
+    @Param('slave_id') slaveId: number,
+  ) {
+    try {
+      const result = await this.deviceService.createSlave(
+        new CreateSlaveDto(masterId, slaveId),
+      );
+
+      return res.status(result.status).json(result);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
