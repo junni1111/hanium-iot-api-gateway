@@ -36,7 +36,7 @@ env:
   ECR_REPOSITORY: api-gateway # set this to your Amazon ECR repository name
   ECS_SERVICE: gateway # set this to your Amazon ECS service name
   ECS_CLUSTER: iot-cluster # set this to your Amazon ECS cluster name
-  #  ECS_TASK_DEFINITION:
+  ECS_TASK_DEFINITION: ../../task-definition.json
   #    MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
   # file, e.g. .aws/task-definition.json
   CONTAINER_NAME:
@@ -91,7 +91,7 @@ jobs:
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          #          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
