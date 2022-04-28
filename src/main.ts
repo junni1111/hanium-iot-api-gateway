@@ -30,7 +30,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('IoT Gateway API')
     .setDescription('IoT Microservice API 문서입니다')
-    .setVersion('1.0.10')
+    .setVersion('1.0.12')
     .addTag(MASTER)
     .addTag(TEMPERATURE)
     .addTag(WATER_PUMP)
