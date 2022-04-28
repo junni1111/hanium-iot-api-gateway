@@ -81,7 +81,6 @@
   "runtimePlatform": null,
   "cpu": null,
   "revision": 4,
-  "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
   "volumes": []
