@@ -37,12 +37,12 @@ env:
   ECS_SERVICE: gateway # set this to your Amazon ECS service name
   ECS_CLUSTER: iot-cluster # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: task-definition.json
+  CONTAINER_NAME: gateway
   #    MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
   # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME:
-    gateway
-    # set this to the name of the container in the
-    # containerDefinitions section of your task definition
+
+  # set this to the name of the container in the
+  # containerDefinitions section of your task definition
 
 permissions:
   contents: read
