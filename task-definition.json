@@ -18,7 +18,7 @@
   "taskRoleArn": "arn:aws:iam::913168039706:role/ecsTaskExecutionRole",
   "compatibilities": ["EXTERNAL", "EC2"],
   "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:913168039706:task-definition/api-gateway-example:1",
-  "family": "api-gateway-example",
+  "family": "gateway",
   "requiresAttributes": [
     {
       "targetId": null,
