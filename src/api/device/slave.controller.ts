@@ -33,6 +33,21 @@ export class SlaveController {
     private readonly ledService: LedService,
   ) {}
 
+  /* Todo: Change url */
+  @ApiTags(TEMPERATURE)
+  @Get('master/:master_id/slave/:slave_id/temperature/now')
+  async getCurrentTemperature(
+    @Param('master_id') masterId: number,
+    @Param('slave_id') slaveId: number,
+    @Res() res: Response,
+  ) {
+    const result = await this.temperatureService.getCurrentTemperature(
+      masterId,
+      slaveId,
+    );
+
+    return res.status(HttpStatus.OK).json(result);
+  }
   @ApiTags(TEMPERATURE)
   @Post('slave/config/temperature')
   async setTemperatureConfig(
@@ -147,6 +162,19 @@ export class SlaveController {
       );
 
       return res.status(result.status).json(result);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  @ApiTags(TEMPERATURE)
+  @Get('test/temperature')
+  async createTestTemperatureData() {
+    try {
+      const result = await this.temperatureService.createTestData();
+      console.log(result);
+
+      return result;
     } catch (e) {
       console.log(e);
     }
