@@ -1,0 +1,46 @@
+{
+  "executionRoleArn": "arn:aws:iam::913168039706:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "portMappings": [
+        {
+          "hostPort": 7770,
+          "protocol": "tcp",
+          "containerPort": 7777
+        }
+      ],
+      "cpu": 100,
+      "memory": 128,
+      "image": "913168039706.dkr.ecr.ap-northeast-2.amazonaws.com/api-gateway",
+      "name": "gateway"
+    }
+  ],
+  "taskRoleArn": "arn:aws:iam::913168039706:role/ecsTaskExecutionRole",
+  "compatibilities": ["EXTERNAL", "EC2"],
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:913168039706:task-definition/api-gateway-example:1",
+  "family": "api-gateway-example",
+  "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-ecr-pull"
+    }
+  ],
+  "requiresCompatibilities": ["EC2"],
+  "networkMode": "bridge",
+  "revision": 1,
+  "status": "ACTIVE"
+}
