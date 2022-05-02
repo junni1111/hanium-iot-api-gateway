@@ -5,7 +5,7 @@ import {
   event_gateway_port,
   gateway_host,
   rest_gateway_port,
-} from './config';
+} from './config/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
@@ -35,7 +35,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('IoT Gateway API')
     .setDescription('IoT Microservice API 문서입니다')
-    .setVersion('1.0.12')
+    .setVersion('1.0.13')
     .addTag(MASTER)
     .addTag(TEMPERATURE)
     .addTag(WATER_PUMP)

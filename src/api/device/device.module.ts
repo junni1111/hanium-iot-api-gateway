@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { DEVICE_MICROSERVICE } from '../../util/constants';
-import { device_host, device_port } from '../../config';
+import { device_host, device_port } from '../../config/config';
 import { TemperatureService } from './temperature.service';
 import { WaterPumpService } from './water-pump.service';
 import { LedService } from './led.service';
