@@ -7,7 +7,7 @@ import { UTILITY } from './util/constants';
 export class HealthController {
   @Get()
   healthCheck(@Res() res) {
-    console.log(`call health check`);
+    console.log(`Health check`);
 
     return res.status(HttpStatus.OK).send('ok');
   }
