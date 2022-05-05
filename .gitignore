@@ -37,4 +37,3 @@ lerna-debug.log*
 # script
 /scripts/fb-aws-deploy.sh
 
-.env
