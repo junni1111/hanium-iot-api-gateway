@@ -10,7 +10,10 @@ import { ResponseStatus } from './interfaces/response-status';
 export class TemperatureService {
   constructor(private readonly deviceMicroservice: MasterService) {}
 
-  async getCurrentTemperature(masterId: number, slaveId: number) {
+  async getCurrentTemperature(
+    masterId: number,
+    slaveId: number,
+  ): Promise<ResponseStatus> {
     return lastValueFrom(
       this.deviceMicroservice.sendMessage(
         new DeviceMessageDto(

@@ -46,7 +46,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-spec', app, document);
 
   console.log(
-    `geteway ENV - rest host ${gateway_host}, rest PORT ${rest_gateway_port}, device HOST ${device_host}`,
+    `geteway ENV:${process.env.NODE_ENV} - rest host ${gateway_host}, rest PORT ${rest_gateway_port}, device HOST ${device_host}`,
   );
   await app.listen(rest_gateway_port);
 }

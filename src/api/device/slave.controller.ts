@@ -41,12 +41,21 @@ export class SlaveController {
     @Param('slave_id') slaveId: number,
     @Res() res: Response,
   ) {
-    const result = await this.temperatureService.getCurrentTemperature(
-      masterId,
-      slaveId,
-    );
+    try {
+      const response = await this.temperatureService.getCurrentTemperature(
+        masterId,
+        slaveId,
+      );
 
-    return res.status(HttpStatus.OK).json(result);
+      return res.status(response.status).json(response);
+    } catch (e) {
+      const response: ResponseStatus = {
+        status: HttpStatus.BAD_REQUEST,
+        topic: ESlaveConfigTopic.WATER_PUMP,
+        message: e.message,
+      };
+      return res.status(response.status).json(response);
+    }
   }
   @ApiTags(TEMPERATURE)
   @Post('slave/config/temperature')
