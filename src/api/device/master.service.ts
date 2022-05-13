@@ -4,8 +4,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { DEVICE_MICROSERVICE } from '../../util/constants';
 import { catchError, lastValueFrom, map, Observable } from 'rxjs';
 import { ResponseStatus } from './interfaces/response-status';
-import { CreateMasterDto } from './dto/create-master.dto';
-import { CreateSlaveDto } from './dto/create-slave.dto';
+import { CreateMasterDto } from './dto/master/create-master.dto';
+import { CreateSlaveDto } from './dto/slave/create-slave.dto';
 
 @Injectable()
 export class MasterService {

@@ -5,6 +5,11 @@ export enum ESlaveConfigTopic {
   LED = 'config/led',
 }
 
+export enum ESlaveTurnPowerTopic {
+  WATER_PUMP = 'power/water',
+  LED = 'power/led',
+}
+
 export const POLLING = 'master/+/polling';
 
 export const TEMPERATURE_WEEK = 'temperature/week';

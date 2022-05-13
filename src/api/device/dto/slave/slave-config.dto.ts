@@ -1,4 +1,4 @@
-import { IsNumber, IsNumberString } from 'class-validator';
+import { IsNumber } from 'class-validator';
 export class SlaveConfigDto {
   @IsNumber()
   masterId: number;

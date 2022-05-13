@@ -3,7 +3,7 @@ import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import { ESlaveConfigTopic } from '../../util/api-topic';
 import { MasterService } from './master.service';
-import { WaterPumpConfigDto } from './dto/water-pump-config.dto';
+import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
 import { ResponseStatus } from './interfaces/response-status';
 
 @Injectable()

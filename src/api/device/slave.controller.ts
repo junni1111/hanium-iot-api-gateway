@@ -5,24 +5,26 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
-import { WaterPumpConfigDto } from './dto/water-pump-config.dto';
+import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
 import { ESlaveConfigTopic, TEMPERATURE_WEEK } from '../../util/api-topic';
 import { ResponseStatus } from './interfaces/response-status';
-import { TemperatureConfigDto } from './dto/temperature-config.dto';
-import { LED, TEMPERATURE } from '../../util/constants';
-import { ApiTags } from '@nestjs/swagger';
+import { TemperatureConfigDto } from './dto/temperature/temperature-config.dto';
+import { LED, TEMPERATURE, WATER_PUMP } from '../../util/constants';
+import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { LedService } from './led.service';
 import { TemperatureService } from './temperature.service';
 import { WaterPumpService } from './water-pump.service';
-import { WATER_PUMP } from '../../util/constants';
-import { LedConfigDto } from './dto/led-config.dto';
-import { CreateSlaveDto } from './dto/create-slave.dto';
+import { LedConfigDto } from './dto/led/led-config.dto';
+import { CreateSlaveDto } from './dto/slave/create-slave.dto';
+import { LedTurnDto } from './dto/led/led-turn.dto';
+import { EPowerState } from './interfaces/power-state';
 
 @Controller('api/device')
 export class SlaveController {
@@ -104,6 +106,7 @@ export class SlaveController {
   }
 
   @ApiTags(LED)
+  @ApiOkResponse()
   @Post('slave/config/led')
   async setLedConfig(@Res() res: Response, @Body() ledConfigDto: LedConfigDto) {
     try {
@@ -117,12 +120,49 @@ export class SlaveController {
     } catch (e) {
       console.log(`catch led config error : `, e);
       const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         topic: ESlaveConfigTopic.LED,
         message: e.message,
       };
 
-      return res.status(HttpStatus.BAD_REQUEST).json(response);
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(response);
+    }
+  }
+
+  @ApiTags(LED)
+  @ApiOkResponse()
+  @ApiQuery({ name: 'power', enum: EPowerState })
+  @Get('master/:master_id/slave/:slave_id/led')
+  async turnLed(
+    @Res() res: Response,
+    @Param('master_id') masterId: number,
+    @Param('slave_id') slaveId: number,
+    @Query('power')
+    powerState: string,
+  ) {
+    switch (powerState) {
+      /*Fall Through*/
+      case EPowerState.OFF:
+      case EPowerState.ON:
+        try {
+          const result = await this.ledService.turnLed(
+            new LedTurnDto(masterId, slaveId, powerState),
+          );
+          return res.status(result.status).json(result);
+        } catch (e) {
+          console.log(e);
+          return res
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .json({ result: e });
+        }
+
+      default:
+        const response: ResponseStatus = {
+          status: HttpStatus.BAD_REQUEST,
+          topic: ESlaveConfigTopic.LED,
+          message: `query param 'power' is not 'on' or 'off'`,
+        };
+        return res.status(HttpStatus.BAD_REQUEST).json(response);
     }
   }
 
@@ -138,7 +178,7 @@ export class SlaveController {
 
     const result = await lastValueFrom(this.deviceService.sendMessage(dto));
     console.log(result);
-    return res.status(HttpStatus.OK).json(result);
+    return res.status(result.status).json(result);
   }
 
   @ApiTags(TEMPERATURE)
@@ -155,7 +195,7 @@ export class SlaveController {
     const dto = new DeviceMessageDto(TEMPERATURE, JSON.stringify(message));
 
     const result = await lastValueFrom(this.deviceService.sendMessage(dto));
-    return res.status(HttpStatus.OK).json(result);
+    return res.status(result.status).json(result);
   }
 
   /* Todo: Refactor URL path */
