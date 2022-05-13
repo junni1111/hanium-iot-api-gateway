@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   HttpStatus,
   Param,
@@ -12,7 +13,11 @@ import { Response } from 'express';
 import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
-import { ESlaveConfigTopic, TEMPERATURE_WEEK } from '../../util/api-topic';
+import {
+  ESensor,
+  ESlaveConfigTopic,
+  TEMPERATURE_WEEK,
+} from '../../util/api-topic';
 import { ResponseStatus } from './interfaces/response-status';
 import { TemperatureConfigDto } from './dto/temperature/temperature-config.dto';
 import { LED, TEMPERATURE, WATER_PUMP } from '../../util/constants';
@@ -24,7 +29,13 @@ import { WaterPumpService } from './water-pump.service';
 import { LedConfigDto } from './dto/led/led-config.dto';
 import { CreateSlaveDto } from './dto/slave/create-slave.dto';
 import { LedTurnDto } from './dto/led/led-turn.dto';
-import { EPowerState } from './interfaces/power-state';
+// import { EPowerState } from './interfaces/sensor';
+import { EPowerState } from '../../util/api-topic';
+import { EnumValidationPipe } from './pipes/sensor-validate.pipe';
+import { WaterPumpTurnDto } from './dto/water-pump/water-pump-turn.dto';
+// import { SensorValidatePipe } from './pipes/sensor-validate.pipe';
+
+class WaterPumpTurnDt extends WaterPumpTurnDto {}
 
 @Controller('api/device')
 export class SlaveController {
@@ -129,6 +140,8 @@ export class SlaveController {
     }
   }
 
+  /**
+   * Todo: Extract Controller*/
   @ApiTags(LED)
   @ApiOkResponse()
   @ApiQuery({ name: 'power', enum: EPowerState })
@@ -160,6 +173,45 @@ export class SlaveController {
         const response: ResponseStatus = {
           status: HttpStatus.BAD_REQUEST,
           topic: ESlaveConfigTopic.LED,
+          message: `query param 'power' is not 'on' or 'off'`,
+        };
+        return res.status(HttpStatus.BAD_REQUEST).json(response);
+    }
+  }
+
+  /**
+   * Todo: Extract Controller*/
+  @ApiTags(WATER_PUMP)
+  @ApiOkResponse()
+  @ApiQuery({ name: 'power', enum: EPowerState })
+  @Get('master/:master_id/slave/:slave_id/water')
+  async turnWaterPump(
+    @Res() res: Response,
+    @Param('master_id') masterId: number,
+    @Param('slave_id') slaveId: number,
+    @Query('power')
+    powerState: string,
+  ) {
+    switch (powerState) {
+      /*Fall Through*/
+      case EPowerState.OFF:
+      case EPowerState.ON:
+        try {
+          const result = await this.waterPumpService.turnWaterPump(
+            new WaterPumpTurnDto(masterId, slaveId, powerState),
+          );
+          return res.status(result.status).json(result);
+        } catch (e) {
+          console.log(e);
+          return res
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .json({ result: e });
+        }
+
+      default:
+        const response: ResponseStatus = {
+          status: HttpStatus.BAD_REQUEST,
+          topic: ESlaveConfigTopic.WATER_PUMP,
           message: `query param 'power' is not 'on' or 'off'`,
         };
         return res.status(HttpStatus.BAD_REQUEST).json(response);

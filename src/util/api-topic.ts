@@ -10,6 +10,16 @@ export enum ESlaveTurnPowerTopic {
   LED = 'power/led',
 }
 
+export enum EPowerState {
+  ON = 'on',
+  OFF = 'off',
+}
+
+export enum ESensor {
+  LED = 'led',
+  WATER_PUMP = 'water',
+}
+
 export const POLLING = 'master/+/polling';
 
 export const TEMPERATURE_WEEK = 'temperature/week';
