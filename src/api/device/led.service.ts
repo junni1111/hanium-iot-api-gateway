@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
-import { ESlaveConfigTopic, ESlaveTurnPowerTopic } from '../../util/api-topic';
+import {
+  ESlaveConfigTopic,
+  ESlaveState,
+  ESlaveTurnPowerTopic,
+} from '../../util/api-topic';
 import { LedConfigDto } from './dto/led/led-config.dto';
 import { MasterService } from './master.service';
 import { LedTurnDto } from './dto/led/led-turn.dto';
+import { LedStateDto } from './dto/led/led-state.dto';
 
 @Injectable()
 export class LedService {
@@ -28,6 +33,18 @@ export class LedService {
 
     return lastValueFrom(
       this.deviceMicroservice.sendMessage(turnLedMessageDto),
+    );
+  }
+
+  async getLedState(ledStateDto: LedStateDto) {
+    console.log(`call led state service`);
+    const ledStateMessageDto = new DeviceMessageDto(
+      ESlaveState.LED,
+      ledStateDto,
+    );
+
+    return lastValueFrom(
+      this.deviceMicroservice.sendMessage(ledStateMessageDto),
     );
   }
 }

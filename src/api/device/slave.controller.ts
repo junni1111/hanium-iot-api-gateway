@@ -16,6 +16,7 @@ import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
 import {
   ESensor,
   ESlaveConfigTopic,
+  ESlaveState,
   TEMPERATURE_WEEK,
 } from '../../util/api-topic';
 import { ResponseStatus } from './interfaces/response-status';
@@ -29,13 +30,9 @@ import { WaterPumpService } from './water-pump.service';
 import { LedConfigDto } from './dto/led/led-config.dto';
 import { CreateSlaveDto } from './dto/slave/create-slave.dto';
 import { LedTurnDto } from './dto/led/led-turn.dto';
-// import { EPowerState } from './interfaces/sensor';
 import { EPowerState } from '../../util/api-topic';
-import { EnumValidationPipe } from './pipes/sensor-validate.pipe';
 import { WaterPumpTurnDto } from './dto/water-pump/water-pump-turn.dto';
-// import { SensorValidatePipe } from './pipes/sensor-validate.pipe';
-
-class WaterPumpTurnDt extends WaterPumpTurnDto {}
+import { LedStateDto } from './dto/led/led-state.dto';
 
 @Controller('api/device')
 export class SlaveController {
@@ -137,6 +134,32 @@ export class SlaveController {
       };
 
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(response);
+    }
+  }
+  /**
+   * Todo: Extract Controller*/
+  @ApiTags(LED)
+  @ApiOkResponse()
+  @Get('master/:master_id/slave/:slave_id/led/state')
+  async getLedState(
+    @Res() res: Response,
+    @Param('master_id') masterId: number,
+    @Param('slave_id') slaveId: number,
+  ) {
+    try {
+      const result = await this.ledService.getLedState(
+        new LedStateDto(masterId, slaveId),
+      );
+
+      return res.status(result.status).json(result);
+    } catch (e) {
+      const response: ResponseStatus = {
+        status: HttpStatus.BAD_REQUEST,
+        topic: ESlaveState.LED,
+        message: `slave state exception`,
+      };
+
+      return res.status(response.status).json(response);
     }
   }
 
