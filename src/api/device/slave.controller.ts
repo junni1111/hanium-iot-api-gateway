@@ -33,6 +33,7 @@ import { LedTurnDto } from './dto/led/led-turn.dto';
 import { EPowerState } from '../../util/api-topic';
 import { WaterPumpTurnDto } from './dto/water-pump/water-pump-turn.dto';
 import { LedStateDto } from './dto/led/led-state.dto';
+import { WaterPumpStateDto } from './dto/water-pump/water-pump-state.dto';
 
 @Controller('api/device')
 export class SlaveController {
@@ -199,6 +200,33 @@ export class SlaveController {
           message: `query param 'power' is not 'on' or 'off'`,
         };
         return res.status(HttpStatus.BAD_REQUEST).json(response);
+    }
+  }
+
+  /**
+   * Todo: Extract Controller*/
+  @ApiTags(WATER_PUMP)
+  @ApiOkResponse()
+  @Get('master/:master_id/slave/:slave_id/water/state')
+  async getWaterPumpState(
+    @Res() res: Response,
+    @Param('master_id') masterId: number,
+    @Param('slave_id') slaveId: number,
+  ) {
+    try {
+      const result = await this.waterPumpService.getWaterPumpState(
+        new WaterPumpStateDto(masterId, slaveId),
+      );
+
+      return res.status(result.status).json(result);
+    } catch (e) {
+      const response: ResponseStatus = {
+        status: HttpStatus.BAD_REQUEST,
+        topic: ESlaveState.WATER_PUMP,
+        message: `slave state exception`,
+      };
+
+      return res.status(response.status).json(response);
     }
   }
 
