@@ -147,6 +147,7 @@ export class SlaveController {
     @Param('master_id') masterId: number,
     @Param('slave_id') slaveId: number,
   ) {
+    console.log(`Call Led State`);
     try {
       const result = await this.ledService.getLedState(
         new LedStateDto(masterId, slaveId),
