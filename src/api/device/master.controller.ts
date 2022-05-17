@@ -11,31 +11,16 @@ import { Response } from 'express';
 import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import { CreateMasterDto } from './dto/master/create-master.dto';
-import { CreateSlaveDto } from './dto/slave/create-slave.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { MASTER } from '../../util/constants';
-import { POLLING } from '../../util/api-topic';
+import { ESlaveState, POLLING } from '../../util/api-topic';
+import { SlaveStateDto } from './dto/slave/slave-state.dto';
 
 @ApiTags(MASTER)
 @Controller('api/device')
 export class MasterController {
   constructor(private readonly masterService: MasterService) {}
-
-  @Get('master/:master_id/slave/:slave_id/state')
-  async getSlaveState(
-    @Res() res: Response,
-    @Param('master_id') masterId: number,
-    @Param('slave_id') slaveId: number,
-  ) {
-    const message = new DeviceMessageDto(
-      'slave/state',
-      JSON.stringify({ master_id: masterId, slave_id: slaveId }),
-    );
-    const result = await lastValueFrom(this.masterService.sendMessage(message));
-
-    return res.status(HttpStatus.OK).json(result);
-  }
 
   @Get('master/:master_id/slave/:slave_id/config')
   async fetchConfig(

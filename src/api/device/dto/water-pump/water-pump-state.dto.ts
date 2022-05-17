@@ -1,6 +1,3 @@
-export class WaterPumpStateDto {
-  constructor(
-    private readonly masterId: number,
-    private readonly slaveId: number,
-  ) {}
-}
+import { SlaveStateDto } from '../slave/slave-state.dto';
+
+export class WaterPumpStateDto extends SlaveStateDto {}

@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Get,
   HttpStatus,
   Param,
@@ -14,14 +13,13 @@ import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
 import {
-  ESensor,
   ESlaveConfigTopic,
   ESlaveState,
   TEMPERATURE_WEEK,
 } from '../../util/api-topic';
 import { ResponseStatus } from './interfaces/response-status';
 import { TemperatureConfigDto } from './dto/temperature/temperature-config.dto';
-import { LED, TEMPERATURE, WATER_PUMP } from '../../util/constants';
+import { LED, SLAVE, TEMPERATURE, WATER_PUMP } from '../../util/constants';
 import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { LedService } from './led.service';
@@ -34,11 +32,17 @@ import { EPowerState } from '../../util/api-topic';
 import { WaterPumpTurnDto } from './dto/water-pump/water-pump-turn.dto';
 import { LedStateDto } from './dto/led/led-state.dto';
 import { WaterPumpStateDto } from './dto/water-pump/water-pump-state.dto';
+import { SlaveStateDto } from './dto/slave/slave-state.dto';
 
+/**
+ * Todo: Split Slave Controller
+ *       -> Temperature,
+ *          WaterPump,
+ *          Led */
 @Controller('api/device')
 export class SlaveController {
   constructor(
-    private readonly deviceService: MasterService,
+    private readonly masterService: MasterService,
     private readonly temperatureService: TemperatureService,
     private readonly waterPumpService: WaterPumpService,
     private readonly ledService: LedService,
@@ -280,7 +284,7 @@ export class SlaveController {
     const message = { master_id: masterId, slave_id: slaveId };
     const dto = new DeviceMessageDto(TEMPERATURE_WEEK, JSON.stringify(message));
 
-    const result = await lastValueFrom(this.deviceService.sendMessage(dto));
+    const result = await lastValueFrom(this.masterService.sendMessage(dto));
     console.log(result);
     return res.status(result.status).json(result);
   }
@@ -298,7 +302,7 @@ export class SlaveController {
     console.log(message);
     const dto = new DeviceMessageDto(TEMPERATURE, JSON.stringify(message));
 
-    const result = await lastValueFrom(this.deviceService.sendMessage(dto));
+    const result = await lastValueFrom(this.masterService.sendMessage(dto));
     return res.status(result.status).json(result);
   }
 
@@ -310,7 +314,7 @@ export class SlaveController {
     @Param('slave_id') slaveId: number,
   ) {
     try {
-      const result = await this.deviceService.createSlave(
+      const result = await this.masterService.createSlave(
         new CreateSlaveDto(masterId, slaveId),
       );
 
@@ -318,6 +322,22 @@ export class SlaveController {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  @ApiTags(SLAVE)
+  @Get('master/:master_id/slave/:slave_id/state')
+  async getSensorsState(
+    @Res() res: Response,
+    @Param('master_id') masterId: number,
+    @Param('slave_id') slaveId: number,
+  ) {
+    const message = new DeviceMessageDto(
+      ESlaveState.ALL,
+      new SlaveStateDto(masterId, slaveId),
+    );
+    const result = await lastValueFrom(this.masterService.sendMessage(message));
+
+    return res.status(HttpStatus.OK).json(result);
   }
 
   @ApiTags(TEMPERATURE)
