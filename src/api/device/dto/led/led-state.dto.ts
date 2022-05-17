@@ -1,6 +1,3 @@
-export class LedStateDto {
-  constructor(
-    private readonly masterId: number,
-    private readonly slaveId: number,
-  ) {}
-}
+import { SlaveStateDto } from '../slave/slave-state.dto';
+
+export class LedStateDto extends SlaveStateDto {}
