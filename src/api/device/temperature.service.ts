@@ -5,6 +5,7 @@ import { ESlaveConfigTopic } from '../../util/api-topic';
 import { MasterService } from './master.service';
 import { TemperatureConfigDto } from './dto/temperature/temperature-config.dto';
 import { ResponseStatus } from './interfaces/response-status';
+import { SlaveStateDto } from './dto/slave/slave-state.dto';
 
 @Injectable()
 export class TemperatureService {
@@ -25,10 +26,10 @@ export class TemperatureService {
     );
   }
 
-  async createTestData() {
+  async createTestData(dto: SlaveStateDto) {
     return lastValueFrom(
       this.deviceMicroservice.sendMessage(
-        new DeviceMessageDto('test/temperature', ''),
+        new DeviceMessageDto('test/temperature', dto),
       ),
     );
   }

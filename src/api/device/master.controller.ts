@@ -87,6 +87,7 @@ export class MasterController {
   async getMasterState(@Param('id') masterId: number, @Res() res: Response) {
     try {
       const dto = new DeviceMessageDto(POLLING, masterId.toString());
+
       const result = await lastValueFrom(this.masterService.sendMessage(dto));
 
       return res.status(HttpStatus.OK).json(result);

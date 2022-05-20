@@ -341,13 +341,22 @@ export class SlaveController {
   }
 
   @ApiTags(TEMPERATURE)
-  @Get('test/temperature')
-  async createTestTemperatureData() {
+  @Post('test/temperature')
+  async createTestTemperatureData(
+    @Res() res: Response,
+    // @Body() slaveStateDto: SlaveStateDto,
+    @Query('master_id') masterId: number,
+    @Query('slave_id') slaveId: number,
+  ) {
     try {
-      const result = await this.temperatureService.createTestData();
+      console.log(`slave state: `, masterId, slaveId);
+
+      const result = await this.temperatureService.createTestData(
+        new SlaveStateDto(masterId, slaveId),
+      );
       console.log(result);
 
-      return result;
+      return res.status(result.status).send(result);
     } catch (e) {
       console.log(e);
     }
