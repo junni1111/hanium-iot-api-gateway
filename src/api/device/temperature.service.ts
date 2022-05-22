@@ -32,6 +32,7 @@ export class TemperatureService {
       ),
     );
   }
+  // sdg
 
   async setTemperatureConfig(
     temperatureConfigDto: TemperatureConfigDto,
