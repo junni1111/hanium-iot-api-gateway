@@ -10,6 +10,9 @@ import { SlaveController } from './slave.controller';
 import { MasterController } from './master.controller';
 import { UtilityController } from './utility.controller';
 import { SlaveService } from './slave.service';
+import { SlaveLedController } from './slave-led.controller';
+import { SlaveTemperatureController } from './slave-temperature.controller';
+import { SlaveWaterPumpController } from './slave-water-pump.controller';
 
 @Module({
   imports: [
@@ -24,7 +27,14 @@ import { SlaveService } from './slave.service';
       },
     ]),
   ],
-  controllers: [MasterController, SlaveController, UtilityController],
+  controllers: [
+    MasterController,
+    SlaveController,
+    UtilityController,
+    SlaveLedController,
+    SlaveTemperatureController,
+    SlaveWaterPumpController,
+  ],
   providers: [
     MasterService,
     SlaveService,
