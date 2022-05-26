@@ -32,7 +32,7 @@ export class SlaveLedController {
   ) {}
 
   @ApiOkResponse()
-  @Get('state/master/:master_id/slave/:slave_id')
+  @Get('state/masters/:master_id/slaves/:slave_id')
   async getLedState(
     @Res() res: Response,
     @Param('master_id') masterId: number,

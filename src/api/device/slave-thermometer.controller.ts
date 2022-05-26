@@ -26,7 +26,7 @@ export class SlaveTemperatureController {
     private readonly thermometerService: ThermometerService,
   ) {}
 
-  @Get('temperature/now/master/:master_id/slave/:slave_id')
+  @Get('temperature/now/masters/:master_id/slaves/:slave_id')
   async getCurrentTemperature(
     @Param('master_id') masterId: number,
     @Param('slave_id') slaveId: number,
@@ -49,7 +49,7 @@ export class SlaveTemperatureController {
     }
   }
 
-  @Get('temperature/week/master/:master_id/slave/:slave_id/')
+  @Get('temperature/week/masters/:master_id/slaves/:slave_id/')
   async getTemperatureOneWeek(
     @Param('master_id') masterId: string,
     @Param('slave_id') slaveId: string,
@@ -63,7 +63,7 @@ export class SlaveTemperatureController {
     return res.status(result.status).json(result);
   }
 
-  @Get('state/master/:master_id/slave/:slave_id/')
+  @Get('state/masters/:master_id/slaves/:slave_id/')
   async getTemperature(
     @Param('master_id') masterId: string,
     @Param('slave_id') slaveId: string,
