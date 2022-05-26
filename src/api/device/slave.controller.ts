@@ -9,7 +9,7 @@ import { MasterService } from './master.service';
 import { CreateSlaveDto } from './dto/slave/create-slave.dto';
 import { SlaveStateDto } from './dto/slave/slave-state.dto';
 
-@Controller('api/device')
+@Controller('api/device-service')
 export class SlaveController {
   constructor(private readonly masterService: MasterService) {}
 

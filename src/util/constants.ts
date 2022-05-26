@@ -7,4 +7,4 @@ export const MASTER = 'master';
 export const SLAVE = 'slave';
 export const LED = 'led';
 export const WATER_PUMP = 'water_pump';
-export const TEMPERATURE = 'temperature';
+export const THERMOMETER = 'thermometer';

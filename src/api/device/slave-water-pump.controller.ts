@@ -18,44 +18,21 @@ import {
 import { WATER_PUMP } from 'src/util/constants';
 import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
 import { WaterPumpStateDto } from './dto/water-pump/water-pump-state.dto';
-import { WaterPumpTurnDto } from './dto/water-pump/water-pump-turn.dto';
+import { WaterPumpPowerDto } from './dto/water-pump/water-pump-power.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { MasterService } from './master.service';
 import { WaterPumpService } from './water-pump.service';
 
 @ApiTags(WATER_PUMP)
-@Controller('api/device')
+@Controller('api/device-service/water-pump')
 export class SlaveWaterPumpController {
   constructor(
     private readonly masterService: MasterService,
     private readonly waterPumpService: WaterPumpService,
   ) {}
 
-  @Post('slave/config/water')
-  async setWaterPumpConfig(
-    @Res() res: Response,
-    @Body() waterConfigDto: WaterPumpConfigDto,
-  ) {
-    try {
-      const result: ResponseStatus =
-        await this.waterPumpService.setWaterPumpConfig(waterConfigDto);
-
-      return res.status(result.status).json(result);
-    } catch (e) {
-      const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
-        topic: ESlaveConfigTopic.WATER_PUMP,
-        message: e.message,
-      };
-
-      return res.status(HttpStatus.BAD_REQUEST).json(response);
-    }
-  }
-
-  /**
-   * Todo: Extract Controller*/
   @ApiOkResponse()
-  @Get('master/:master_id/slave/:slave_id/water/state')
+  @Get('state/master/:master_id/slave/:slave_id')
   async getWaterPumpState(
     @Res() res: Response,
     @Param('master_id') masterId: number,
@@ -78,41 +55,40 @@ export class SlaveWaterPumpController {
     }
   }
 
-  /**
-   * Todo: Extract Controller*/
-  @ApiOkResponse()
-  @ApiQuery({ name: 'power', enum: EPowerState })
-  @Get('master/:master_id/slave/:slave_id/water')
-  async turnWaterPump(
+  @Post('config')
+  async setWaterPumpConfig(
     @Res() res: Response,
-    @Param('master_id') masterId: number,
-    @Param('slave_id') slaveId: number,
-    @Query('power')
-    powerState: string,
+    @Body() waterConfigDto: WaterPumpConfigDto,
   ) {
-    switch (powerState) {
-      /*Fall Through*/
-      case EPowerState.OFF:
-      case EPowerState.ON:
-        try {
-          const result = await this.waterPumpService.turnWaterPump(
-            new WaterPumpTurnDto(masterId, slaveId, powerState),
-          );
-          return res.status(result.status).json(result);
-        } catch (e) {
-          console.log(e);
-          return res
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json({ result: e });
-        }
+    try {
+      const result: ResponseStatus =
+        await this.waterPumpService.setWaterPumpConfig(waterConfigDto);
 
-      default:
-        const response: ResponseStatus = {
-          status: HttpStatus.BAD_REQUEST,
-          topic: ESlaveConfigTopic.WATER_PUMP,
-          message: `query param 'power' is not 'on' or 'off'`,
-        };
-        return res.status(HttpStatus.BAD_REQUEST).json(response);
+      return res.status(result.status).json(result);
+    } catch (e) {
+      const response: ResponseStatus = {
+        status: HttpStatus.BAD_REQUEST,
+        topic: ESlaveConfigTopic.WATER_PUMP,
+        message: e.message,
+      };
+
+      return res.status(HttpStatus.BAD_REQUEST).json(response);
+    }
+  }
+
+  @Post('config/power')
+  async setPowerWaterPump(
+    @Res() res: Response,
+    @Body() waterPumpPowerDto: WaterPumpPowerDto,
+  ) {
+    try {
+      const result = await this.waterPumpService.turnWaterPump(
+        waterPumpPowerDto,
+      );
+      return res.status(result.status).json(result);
+    } catch (e) {
+      console.log(e);
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });
     }
   }
 }

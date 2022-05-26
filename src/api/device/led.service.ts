@@ -8,7 +8,7 @@ import {
 } from '../../util/api-topic';
 import { LedConfigDto } from './dto/led/led-config.dto';
 import { MasterService } from './master.service';
-import { LedTurnDto } from './dto/led/led-turn.dto';
+import { LedPowerDto } from './dto/led/led-power.dto';
 import { LedStateDto } from './dto/led/led-state.dto';
 
 @Injectable()
@@ -24,11 +24,11 @@ export class LedService {
     return lastValueFrom(this.deviceMicroservice.sendMessage(messageDto));
   }
 
-  async turnLed(ledTurnDto: LedTurnDto) {
-    console.log(`call turn led`, ledTurnDto);
+  async turnLed(ledPowerDto: LedPowerDto) {
+    console.log(`call turn led`, ledPowerDto);
     const turnLedMessageDto = new DeviceMessageDto(
       ESlaveTurnPowerTopic.LED,
-      ledTurnDto,
+      ledPowerDto,
     );
 
     return lastValueFrom(

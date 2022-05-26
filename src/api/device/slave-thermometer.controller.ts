@@ -11,29 +11,29 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { lastValueFrom } from 'rxjs';
 import { ESlaveConfigTopic, TEMPERATURE_WEEK } from 'src/util/api-topic';
-import { TEMPERATURE } from 'src/util/constants';
+import { THERMOMETER } from 'src/util/constants';
 import { DeviceMessageDto } from './dto/device-message.dto';
-import { TemperatureConfigDto } from './dto/temperature/temperature-config.dto';
+import { ThermometerConfigDto } from './dto/thermometer/thermometer-config.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { MasterService } from './master.service';
-import { TemperatureService } from './temperature.service';
+import { ThermometerService } from './thermometer.service';
 
-@ApiTags(TEMPERATURE)
-@Controller('api/device')
+@ApiTags(THERMOMETER)
+@Controller('api/device-service/thermometer')
 export class SlaveTemperatureController {
   constructor(
     private readonly masterService: MasterService,
-    private readonly temperatureService: TemperatureService,
+    private readonly thermometerService: ThermometerService,
   ) {}
 
-  @Get('master/:master_id/slave/:slave_id/temperature/now')
+  @Get('temperature/now/master/:master_id/slave/:slave_id')
   async getCurrentTemperature(
     @Param('master_id') masterId: number,
     @Param('slave_id') slaveId: number,
     @Res() res: Response,
   ) {
     try {
-      const response = await this.temperatureService.getCurrentTemperature(
+      const response = await this.thermometerService.getCurrentTemperature(
         masterId,
         slaveId,
       );
@@ -49,30 +49,7 @@ export class SlaveTemperatureController {
     }
   }
 
-  @Post('slave/config/temperature')
-  async setTemperatureConfig(
-    @Res() res: Response,
-    @Body() temperatureConfigDto: TemperatureConfigDto,
-  ) {
-    try {
-      const result: ResponseStatus =
-        await this.temperatureService.setTemperatureConfig(
-          temperatureConfigDto,
-        );
-
-      return res.status(result.status).json(result);
-    } catch (e) {
-      const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
-        topic: ESlaveConfigTopic.TEMPERATURE,
-        message: e.message,
-      };
-
-      return res.status(HttpStatus.BAD_REQUEST).json(response);
-    }
-  }
-
-  @Get('master/:master_id/slave/:slave_id/temperature/week')
+  @Get('temperature/week/master/:master_id/slave/:slave_id/')
   async getTemperatureOneWeek(
     @Param('master_id') masterId: string,
     @Param('slave_id') slaveId: string,
@@ -86,7 +63,7 @@ export class SlaveTemperatureController {
     return res.status(result.status).json(result);
   }
 
-  @Get('master/:master_id/slave/:slave_id/temperature')
+  @Get('state/master/:master_id/slave/:slave_id/')
   async getTemperature(
     @Param('master_id') masterId: string,
     @Param('slave_id') slaveId: string,
@@ -96,16 +73,39 @@ export class SlaveTemperatureController {
     const message = { master_id: masterId, slave_id: slaveId };
 
     console.log(message);
-    const dto = new DeviceMessageDto(TEMPERATURE, JSON.stringify(message));
+    const dto = new DeviceMessageDto(THERMOMETER, JSON.stringify(message));
 
     const result = await lastValueFrom(this.masterService.sendMessage(dto));
     return res.status(result.status).json(result);
   }
 
+  @Post('config')
+  async setThermometerConfig(
+    @Res() res: Response,
+    @Body() thermometerConfigDto: ThermometerConfigDto,
+  ) {
+    try {
+      const result: ResponseStatus =
+        await this.thermometerService.setThermometerConfig(
+          thermometerConfigDto,
+        );
+
+      return res.status(result.status).json(result);
+    } catch (e) {
+      const response: ResponseStatus = {
+        status: HttpStatus.BAD_REQUEST,
+        topic: ESlaveConfigTopic.THERMOMETER,
+        message: e.message,
+      };
+
+      return res.status(HttpStatus.BAD_REQUEST).json(response);
+    }
+  }
+
   @Get('test/temperature')
   async createTestTemperatureData() {
     try {
-      const result = await this.temperatureService.createTestData();
+      const result = await this.thermometerService.createTestData();
       console.log(result);
 
       return result;

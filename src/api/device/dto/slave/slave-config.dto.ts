@@ -1,4 +1,5 @@
 import { IsNumber } from 'class-validator';
+
 export class SlaveConfigDto {
   @IsNumber()
   masterId: number;
@@ -7,13 +8,13 @@ export class SlaveConfigDto {
   slaveId: number;
 
   @IsNumber()
-  startTemperatureRange: number;
+  startThermometerRange: number;
 
   @IsNumber()
-  endTemperatureRange: number;
+  endThermometerRange: number;
 
   @IsNumber()
-  temperatureUpdateCycle: number;
+  thermometerUpdateCycle: number;
 
   @IsNumber()
   waterPumpCycle: number;

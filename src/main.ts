@@ -9,7 +9,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
-import { LED, MASTER, TEMPERATURE, WATER_PUMP } from './util/constants';
+import { LED, MASTER, THERMOMETER, WATER_PUMP } from './util/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -37,7 +37,7 @@ async function bootstrap() {
     .setDescription('IoT Microservice API 문서입니다')
     .setVersion('1.0.14')
     .addTag(MASTER)
-    .addTag(TEMPERATURE)
+    .addTag(THERMOMETER)
     .addTag(WATER_PUMP)
     .addTag(LED)
     .build();
