@@ -171,6 +171,8 @@ export class SlaveController {
 
   /**
    * Todo: Extract Controller*/
+  /**
+   * Todo: Post로 바꿔야함 */
   @ApiTags(LED)
   @ApiOkResponse()
   @ApiQuery({ name: 'power', enum: EPowerState })
@@ -182,6 +184,7 @@ export class SlaveController {
     @Query('power')
     powerState: string,
   ) {
+    console.log(`Turn LED Controller: `, powerState);
     switch (powerState) {
       /*Fall Through*/
       case EPowerState.OFF:
@@ -237,6 +240,9 @@ export class SlaveController {
 
   /**
    * Todo: Extract Controller*/
+  /**
+   * Todo: Change Get -> Post
+   **/
   @ApiTags(WATER_PUMP)
   @ApiOkResponse()
   @ApiQuery({ name: 'power', enum: EPowerState })
@@ -245,6 +251,7 @@ export class SlaveController {
     @Res() res: Response,
     @Param('master_id') masterId: number,
     @Param('slave_id') slaveId: number,
+    /** Todo: Make Dto*/
     @Query('power')
     powerState: string,
   ) {
