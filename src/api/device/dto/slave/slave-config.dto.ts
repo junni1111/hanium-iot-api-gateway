@@ -8,13 +8,13 @@ export class SlaveConfigDto {
   slaveId: number;
 
   @IsNumber()
-  startThermometerRange: number;
+  startTemperatureRange: number;
 
   @IsNumber()
-  endThermometerRange: number;
+  endTemperatureRange: number;
 
   @IsNumber()
-  thermometerUpdateCycle: number;
+  temperatureUpdateCycle: number;
 
   @IsNumber()
   waterPumpCycle: number;
