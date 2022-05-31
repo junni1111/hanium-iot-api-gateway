@@ -5,16 +5,11 @@ import {
   HttpStatus,
   Param,
   Post,
-  Query,
   Res,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import {
-  EPowerState,
-  ESlaveConfigTopic,
-  ESlaveState,
-} from 'src/util/api-topic';
+import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
 import { LED } from 'src/util/constants';
 import { LedConfigDto } from './dto/led/led-config.dto';
 import { LedStateDto } from './dto/led/led-state.dto';

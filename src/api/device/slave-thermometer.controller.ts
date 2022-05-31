@@ -17,6 +17,7 @@ import { ThermometerConfigDto } from './dto/thermometer/thermometer-config.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { MasterService } from './master.service';
 import { ThermometerService } from './thermometer.service';
+import { SlaveStateDto } from './dto/slave/slave-state.dto';
 
 @ApiTags(THERMOMETER)
 @Controller('api/device-service/thermometer')
@@ -102,10 +103,12 @@ export class SlaveTemperatureController {
     }
   }
 
-  @Get('test/temperature')
-  async createTestTemperatureData() {
+  @Post('test/temperature')
+  async createTestTemperatureData(@Body() slaveStateDto: SlaveStateDto) {
     try {
-      const result = await this.thermometerService.createTestData();
+      const result = await this.thermometerService.createTestData(
+        slaveStateDto,
+      );
       console.log(result);
 
       return result;
