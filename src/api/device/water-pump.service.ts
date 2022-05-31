@@ -9,7 +9,7 @@ import {
 import { MasterService } from './master.service';
 import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
 import { ResponseStatus } from './interfaces/response-status';
-import { WaterPumpTurnDto } from './dto/water-pump/water-pump-turn.dto';
+import { WaterPumpPowerDto } from './dto/water-pump/water-pump-power.dto';
 import { WaterPumpStateDto } from './dto/water-pump/water-pump-state.dto';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class WaterPumpService {
     return lastValueFrom(this.deviceMicroservice.sendMessage(messageDto));
   }
 
-  async turnWaterPump(waterPumpTurnDto: WaterPumpTurnDto) {
+  async turnWaterPump(waterPumpTurnDto: WaterPumpPowerDto) {
     console.log(`call turn water pump`, waterPumpTurnDto);
     const turnWaterPumpMessageDto = new DeviceMessageDto(
       ESlaveTurnPowerTopic.WATER_PUMP,

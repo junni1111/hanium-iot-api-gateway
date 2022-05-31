@@ -3,12 +3,12 @@ import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import { ESlaveConfigTopic } from '../../util/api-topic';
 import { MasterService } from './master.service';
-import { TemperatureConfigDto } from './dto/temperature/temperature-config.dto';
+import { ThermometerConfigDto } from './dto/thermometer/thermometer-config.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { SlaveStateDto } from './dto/slave/slave-state.dto';
 
 @Injectable()
-export class TemperatureService {
+export class ThermometerService {
   constructor(private readonly deviceMicroservice: MasterService) {}
 
   async getCurrentTemperature(
@@ -34,12 +34,12 @@ export class TemperatureService {
     );
   }
 
-  async setTemperatureConfig(
-    temperatureConfigDto: TemperatureConfigDto,
+  async setThermometerConfig(
+    ThermometerConfigDto: ThermometerConfigDto,
   ): Promise<ResponseStatus> {
     const messageDto = new DeviceMessageDto(
-      ESlaveConfigTopic.TEMPERATURE,
-      temperatureConfigDto,
+      ESlaveConfigTopic.THERMOMETER,
+      ThermometerConfigDto,
     );
 
     return lastValueFrom(this.deviceMicroservice.sendMessage(messageDto));

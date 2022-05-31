@@ -1,6 +1,6 @@
 export enum ESlaveConfigTopic {
   ALL = 'config',
-  TEMPERATURE = 'config/temperature',
+  THERMOMETER = 'config/temperature',
   WATER_PUMP = 'config/water',
   LED = 'config/led',
 }
@@ -22,7 +22,7 @@ export enum ESensor {
 
 export enum ESlaveState {
   ALL = 'state',
-  TEMPERATURE = 'temperature/state',
+  THERMOMETER = 'temperature/state',
   WATER_PUMP = 'water/state',
   LED = 'led/state',
 }

@@ -1,4 +1,5 @@
 import { IsNumber } from 'class-validator';
+
 export class CreateSlaveDto {
   @IsNumber()
   masterId: number;

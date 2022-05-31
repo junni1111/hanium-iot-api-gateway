@@ -19,7 +19,7 @@ import { ResponseStatus } from './interfaces/response-status';
 import { SlaveService } from './slave.service';
 
 @ApiTags(MASTER)
-@Controller('api/device')
+@Controller('api/device-service')
 export class MasterController {
   constructor(
     private readonly masterService: MasterService,

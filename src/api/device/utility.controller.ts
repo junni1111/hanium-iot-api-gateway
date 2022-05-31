@@ -6,7 +6,7 @@ import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 
 @ApiTags(UTILITY)
-@Controller('api/device')
+@Controller('api/device-service')
 export class UtilityController {
   constructor(private readonly masterService: MasterService) {}
 
