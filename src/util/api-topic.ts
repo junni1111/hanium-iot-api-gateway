@@ -8,6 +8,7 @@ export enum ESlaveConfigTopic {
 export enum ESlaveTurnPowerTopic {
   WATER_PUMP = 'power/water',
   LED = 'power/led',
+  FAN = 'power/fan',
 }
 
 export enum EPowerState {

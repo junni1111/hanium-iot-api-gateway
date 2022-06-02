@@ -13,6 +13,8 @@ import { SlaveService } from './slave.service';
 import { SlaveLedController } from './slave-led.controller';
 import { SlaveTemperatureController } from './slave-thermometer.controller';
 import { SlaveWaterPumpController } from './slave-water-pump.controller';
+import { SlaveFanController } from './slave-fan.controller';
+import { FanService } from './fan.service';
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { SlaveWaterPumpController } from './slave-water-pump.controller';
     SlaveLedController,
     SlaveTemperatureController,
     SlaveWaterPumpController,
+    SlaveFanController,
   ],
   providers: [
     MasterService,
@@ -41,6 +44,7 @@ import { SlaveWaterPumpController } from './slave-water-pump.controller';
     ThermometerService,
     WaterPumpService,
     LedService,
+    FanService,
   ],
 })
 export class DeviceModule {}
