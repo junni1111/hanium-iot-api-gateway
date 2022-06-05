@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { DEVICE_MICROSERVICE } from '../../util/constants';
-import { device_host, device_port } from '../../config/config';
+import { DEVICE_HOST, DEVICE_PORT } from '../../config/config';
 import { ThermometerService } from './thermometer.service';
 import { WaterPumpService } from './water-pump.service';
 import { LedService } from './led.service';
@@ -15,6 +14,7 @@ import { SlaveTemperatureController } from './slave-thermometer.controller';
 import { SlaveWaterPumpController } from './slave-water-pump.controller';
 import { SlaveFanController } from './slave-fan.controller';
 import { FanService } from './fan.service';
+import { DEVICE_MICROSERVICE } from '../../util/constants/microservices';
 
 @Module({
   imports: [
@@ -23,8 +23,8 @@ import { FanService } from './fan.service';
         name: DEVICE_MICROSERVICE,
         transport: Transport.TCP,
         options: {
-          host: device_host,
-          port: device_port,
+          host: DEVICE_HOST,
+          port: DEVICE_PORT,
         },
       },
     ]),

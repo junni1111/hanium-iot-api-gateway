@@ -1,7 +1,3 @@
-export const LED_MICROSERVICE = 'LED_MICROSERVICE';
-export const DEVICE_MICROSERVICE = 'DEVICE_MICROSERVICE';
-export const MQTT_BROKER = 'MQTT_BROKER';
-
 export const UTILITY = 'utility';
 export const MASTER = 'master';
 export const SLAVE = 'slave';

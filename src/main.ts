@@ -1,23 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {
-  device_host,
-  event_gateway_port,
-  gateway_host,
-  rest_gateway_port,
+  DEVICE_HOST,
+  EVENT_GATEWAY_PORT,
+  API_GATEWAY_HOST,
+  REST_GATEWAY_PORT,
 } from './config/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
-import { LED, MASTER, THERMOMETER, WATER_PUMP } from './util/constants';
+import {LED, MASTER, THERMOMETER, WATER_PUMP} from "./util/constants/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.connectMicroservice({
     transport: Transport.TCP,
     options: {
-      port: event_gateway_port,
-      host: gateway_host,
+      port: EVENT_GATEWAY_PORT,
+      host: API_GATEWAY_HOST,
       retryAttempts: 5,
       retryDelay: 3000,
     },
@@ -46,9 +46,9 @@ async function bootstrap() {
   SwaggerModule.setup('api-spec', app, document);
 
   console.log(
-    `geteway ENV:${process.env.NODE_ENV} - rest host ${gateway_host}, rest PORT ${rest_gateway_port}, device HOST ${device_host}`,
+    `geteway ENV:${process.env.NODE_ENV} - rest host ${API_GATEWAY_HOST}, rest PORT ${REST_GATEWAY_PORT}, device HOST ${DEVICE_HOST}`,
   );
-  await app.listen(rest_gateway_port);
+  await app.listen(REST_GATEWAY_PORT);
 }
 
 bootstrap();
