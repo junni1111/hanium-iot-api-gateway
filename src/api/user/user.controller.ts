@@ -1,9 +1,18 @@
 import { UserService } from './user.service';
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Query,
+  Req,
+  Res,
+  Headers,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { lastValueFrom } from 'rxjs';
 import { ResponseStatus } from '../device/interfaces/response-status';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('api/user-service')
 export class UserController {
@@ -27,10 +36,23 @@ export class UserController {
     }
   }
 
+  @Post('jwt')
+  async jwt(@Headers() header: any) {
+    // const { jwt } = dto;
+    console.log(header);
+    const result = await lastValueFrom(this.userService.jwt(header));
+    console.log(`Get Result: `, result);
+
+    return result;
+  }
+
   @Post('signin')
   async signIn(@Body() createUserDto: CreateUserDto) {
     const result = await lastValueFrom(this.userService.signIn(createUserDto));
+    /** Todo: Set JWT */
     console.log(`result: `, result);
     return result;
   }
+
+  // async authorization(@)
 }
