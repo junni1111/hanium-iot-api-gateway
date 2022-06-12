@@ -16,7 +16,7 @@ import { MasterService } from './master.service';
 import { POLLING } from '../../util/api-topic';
 import { ResponseStatus } from './interfaces/response-status';
 import { SlaveService } from './slave.service';
-import {MASTER} from "../../util/constants/swagger";
+import { MASTER } from '../../util/constants/swagger';
 
 @ApiTags(MASTER)
 @Controller('api/device-service')
