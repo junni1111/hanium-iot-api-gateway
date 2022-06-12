@@ -11,13 +11,13 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { lastValueFrom } from 'rxjs';
 import { ESlaveConfigTopic, TEMPERATURE_WEEK } from 'src/util/api-topic';
+import { THERMOMETER } from 'src/util/constants';
 import { DeviceMessageDto } from './dto/device-message.dto';
 import { ThermometerConfigDto } from './dto/thermometer/thermometer-config.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { MasterService } from './master.service';
 import { ThermometerService } from './thermometer.service';
 import { SlaveStateDto } from './dto/slave/slave-state.dto';
-import {THERMOMETER} from "../../util/constants/swagger";
 
 @ApiTags(THERMOMETER)
 @Controller('api/device-service/thermometer')

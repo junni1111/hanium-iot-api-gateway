@@ -10,13 +10,13 @@ import {
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
+import { WATER_PUMP } from 'src/util/constants';
 import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
 import { WaterPumpStateDto } from './dto/water-pump/water-pump-state.dto';
 import { WaterPumpPowerDto } from './dto/water-pump/water-pump-power.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { MasterService } from './master.service';
 import { WaterPumpService } from './water-pump.service';
-import {WATER_PUMP} from "../../util/constants/swagger";
 
 @ApiTags(WATER_PUMP)
 @Controller('api/device-service/water-pump')

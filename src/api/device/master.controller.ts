@@ -13,10 +13,10 @@ import { lastValueFrom } from 'rxjs';
 import { CreateMasterDto } from './dto/master/create-master.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
+import { MASTER } from '../../util/constants';
 import { POLLING } from '../../util/api-topic';
 import { ResponseStatus } from './interfaces/response-status';
 import { SlaveService } from './slave.service';
-import {MASTER} from "../../util/constants/swagger";
 
 @ApiTags(MASTER)
 @Controller('api/device-service')

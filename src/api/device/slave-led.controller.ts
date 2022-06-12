@@ -10,13 +10,13 @@ import {
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
+import { LED } from 'src/util/constants';
 import { LedConfigDto } from './dto/led/led-config.dto';
 import { LedStateDto } from './dto/led/led-state.dto';
 import { LedPowerDto } from './dto/led/led-power.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { LedService } from './led.service';
 import { MasterService } from './master.service';
-import {LED} from "../../util/constants/swagger";
 
 @ApiTags(LED)
 @Controller('api/device-service/led')

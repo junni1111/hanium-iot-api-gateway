@@ -2,9 +2,9 @@ import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { MasterService } from './master.service';
+import { FAN } from '../../util/constants';
 import { FanService } from './fan.service';
 import { SlavePowerDto } from './dto/slave/slave-power.dto';
-import {FAN} from "../../util/constants/swagger";
 
 @ApiTags(FAN)
 @Controller('api/device-service/fan')
