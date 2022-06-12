@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {
   device_host,
+  device_port,
   event_gateway_port,
   gateway_host,
   rest_gateway_port,
@@ -46,7 +47,10 @@ async function bootstrap() {
   SwaggerModule.setup('api-spec', app, document);
 
   console.log(
-    `geteway ENV:${process.env.NODE_ENV} - rest host ${gateway_host}, rest PORT ${rest_gateway_port}, device HOST ${device_host}`,
+    `geteway ENV:${process.env.NODE_ENV} - rest host ${gateway_host}, rest PORT ${rest_gateway_port}, device HOST ${device_host} device PORT ${device_port}`,
+  );
+  console.log(
+    `Device HOST, PORT ENV: ${process.env.DEVICE_HOST} - ${process.env.DEVICE_PORT}`,
   );
   await app.listen(rest_gateway_port);
 }
