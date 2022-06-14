@@ -52,6 +52,8 @@ async function bootstrap() {
   console.log(
     `Device HOST, PORT ENV: ${process.env.DEVICE_HOST} - ${process.env.DEVICE_PORT}`,
   );
+
+  console.log(`ENV List: `, process.env);
   await app.listen(rest_gateway_port);
 }
 
