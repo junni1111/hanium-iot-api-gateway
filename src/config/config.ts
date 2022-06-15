@@ -17,7 +17,7 @@ dotenv.config({
 export const DEVICE_HOST = process.env.DEVICE_HOST || '0.0.0.0';
 export const GATEWAY_HOST = process.env.GATEWAY_HOST || '0.0.0.0';
 export const DEVICE_PORT =
-  Number(process.env.DEVICE_PORT_8000_TCP_PORT) ||
+  Number(process.env.DEVICE_PORT_8888_TCP_PORT) ||
   Number(process.env.DEVICE_PORT) ||
-  8000;
+  8888;
 export const GATEWAY_PORT = Number(process.env.GATEWAY_PORT) || 7777;
