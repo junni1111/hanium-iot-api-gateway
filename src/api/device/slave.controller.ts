@@ -3,11 +3,11 @@ import { Response } from 'express';
 import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import { ESlaveState } from '../../util/api-topic';
-import { SLAVE } from '../../util/constants';
 import { ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { CreateSlaveDto } from './dto/slave/create-slave.dto';
 import { SlaveStateDto } from './dto/slave/slave-state.dto';
+import {SLAVE} from "../../util/constants/swagger";
 
 @Controller('api/device-service')
 export class SlaveController {

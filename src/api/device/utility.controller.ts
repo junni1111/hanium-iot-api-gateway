@@ -1,9 +1,9 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UTILITY } from '../../util/constants';
 import { MasterService } from './master.service';
 import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
+import {UTILITY} from "../../util/constants/swagger";
 
 @ApiTags(UTILITY)
 @Controller('api/device-service')

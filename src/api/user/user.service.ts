@@ -1,16 +1,8 @@
-import {
-  HttpStatus,
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { USER_AUTH_MICROSERVICE } from '../../util/constants/microservices';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
-import { catchError, map, of } from 'rxjs';
-import { Request } from 'express';
-import { constants } from 'http2';
+import { catchError, map } from 'rxjs';
 import { SignInDto } from './dto/sign-in.dto';
 
 @Injectable()
