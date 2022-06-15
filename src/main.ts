@@ -1,30 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {
-  device_host,
-  device_port,
-  event_gateway_port,
-  gateway_host,
-  rest_gateway_port,
+  DEVICE_HOST,
+  DEVICE_PORT,
+  GATEWAY_HOST,
+  GATEWAY_PORT,
 } from './config/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import { LED, MASTER, THERMOMETER, WATER_PUMP } from './util/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.connectMicroservice({
-    transport: Transport.TCP,
-    options: {
-      port: event_gateway_port,
-      host: gateway_host,
-      retryAttempts: 5,
-      retryDelay: 3000,
-    },
-  });
-  app.enableCors();
 
+  app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -47,14 +36,14 @@ async function bootstrap() {
   SwaggerModule.setup('api-spec', app, document);
 
   console.log(
-    `geteway ENV:${process.env.NODE_ENV} - rest host ${gateway_host}, rest PORT ${rest_gateway_port}, device HOST ${device_host} device PORT ${device_port}`,
+    `geteway ENV:${process.env.NODE_ENV} - rest host ${GATEWAY_HOST}, rest PORT ${GATEWAY_PORT}, device HOST ${DEVICE_HOST} device PORT ${DEVICE_PORT}`,
   );
   console.log(
     `Device HOST, PORT ENV: ${process.env.DEVICE_HOST} - ${process.env.DEVICE_PORT}`,
   );
 
   console.log(`ENV List: `, process.env);
-  await app.listen(rest_gateway_port);
+  await app.listen(GATEWAY_PORT);
 }
 
 bootstrap();

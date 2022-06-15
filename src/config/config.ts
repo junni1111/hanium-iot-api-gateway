@@ -14,9 +14,10 @@ dotenv.config({
   ),
 });
 
-export const device_host = process.env.DEVICE_HOST || '0.0.0.0';
-export const gateway_host = process.env.GATEWAY_HOST || '0.0.0.0';
-export const device_port = Number(process.env.DEVICE_PORT) || 7779;
-export const rest_gateway_port = Number(process.env.GATEWAY_PORT) || 7777;
-export const event_gateway_port =
-  Number(process.env.EVENT_GATEWAY_PORT) || 7776;
+export const DEVICE_HOST = process.env.DEVICE_HOST || '0.0.0.0';
+export const GATEWAY_HOST = process.env.GATEWAY_HOST || '0.0.0.0';
+export const DEVICE_PORT =
+  Number(process.env.DEVICE_PORT_8000_TCP_PORT) ||
+  Number(process.env.DEVICE_PORT) ||
+  8000;
+export const GATEWAY_PORT = Number(process.env.GATEWAY_PORT) || 7777;
