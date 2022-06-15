@@ -4,6 +4,7 @@ import { USER_AUTH_HOST, USER_AUTH_PORT } from '../../config/config';
 import { USER_AUTH_MICROSERVICE } from '../../util/constants/microservices';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { UtilityController } from './utility.controller';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { UserService } from './user.service';
       },
     ]),
   ],
-  controllers: [UserController],
+  controllers: [UserController, UtilityController],
   providers: [UserService],
 })
 export class UserModule {}

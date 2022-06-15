@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
   Headers,
   HttpStatus,
   Logger,
@@ -16,7 +17,10 @@ import { lastValueFrom } from 'rxjs';
 import { ResponseStatus } from '../device/interfaces/response-status';
 import { Request, Response } from 'express';
 import { SignInDto } from './dto/sign-in.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { USER } from '../../util/constants/swagger';
 
+@ApiTags(USER)
 @Controller('api/user-service')
 export class UserController {
   constructor(private userService: UserService) {}

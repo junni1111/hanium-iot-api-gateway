@@ -5,7 +5,7 @@ import { catchError, lastValueFrom, map, Observable } from 'rxjs';
 import { ResponseStatus } from './interfaces/response-status';
 import { CreateMasterDto } from './dto/master/create-master.dto';
 import { CreateSlaveDto } from './dto/slave/create-slave.dto';
-import {DEVICE_MICROSERVICE} from "../../util/constants/microservices";
+import { DEVICE_MICROSERVICE } from '../../util/constants/microservices';
 
 @Injectable()
 export class MasterService {
