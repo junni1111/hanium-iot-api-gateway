@@ -9,7 +9,7 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { lastValueFrom } from 'rxjs';
 import { ESlaveConfigTopic, TEMPERATURE_WEEK } from 'src/util/api-topic';
