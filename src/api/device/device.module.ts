@@ -14,7 +14,7 @@ import { SlaveTemperatureController } from './slave-thermometer.controller';
 import { SlaveWaterPumpController } from './slave-water-pump.controller';
 import { SlaveFanController } from './slave-fan.controller';
 import { FanService } from './fan.service';
-import { DEVICE_MICROSERVICE } from '../../util/constants/microservices';
+import {DEVICE_MICROSERVICE} from "../../util/constants/microservices";
 
 @Module({
   imports: [
