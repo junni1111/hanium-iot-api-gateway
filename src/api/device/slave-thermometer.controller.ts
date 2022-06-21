@@ -3,8 +3,10 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Logger,
   Param,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -17,7 +19,8 @@ import { ResponseStatus } from './interfaces/response-status';
 import { MasterService } from './master.service';
 import { ThermometerService } from './thermometer.service';
 import { SlaveStateDto } from './dto/slave/slave-state.dto';
-import {THERMOMETER} from "../../util/constants/swagger";
+import { THERMOMETER } from '../../util/constants/swagger';
+import { TemperatureBetweenDto } from './dto/thermometer/temperature-between.dto';
 
 @ApiTags(THERMOMETER)
 @Controller('api/device-service/thermometer')
@@ -26,6 +29,28 @@ export class SlaveTemperatureController {
     private readonly masterService: MasterService,
     private readonly thermometerService: ThermometerService,
   ) {}
+
+  @Post('temperature/between')
+  async getTemperatures(
+    @Body() dto: TemperatureBetweenDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.thermometerService.getTemperatures(dto);
+      Logger.debug(`날짜 범위 온도: `, result);
+      Logger.log(result);
+
+      return res.status(result.status).json(result);
+    } catch (e) {
+      const response: ResponseStatus = {
+        status: HttpStatus.BAD_REQUEST,
+        topic: 'temperature/between',
+        message: e.message,
+      };
+
+      return res.status(response.status).json(response);
+    }
+  }
 
   @Get('temperature/now/masters/:master_id/slaves/:slave_id')
   async getCurrentTemperature(
