@@ -74,16 +74,20 @@ export class SlaveTemperatureController {
     }
   }
 
-  @Get('temperature/week/masters/:master_id/slaves/:slave_id/')
+  /** Todo: 재한이한테 URL 수정 알려주기 */
+  @Post('temperature/week')
   async getTemperatureOneWeek(
-    @Param('master_id') masterId: string,
-    @Param('slave_id') slaveId: string,
+    @Body() temperatureBetweenDto: TemperatureBetweenDto,
     @Res() res: Response,
   ) {
-    const message = { master_id: masterId, slave_id: slaveId };
-    const dto = new DeviceMessageDto(TEMPERATURE_WEEK, JSON.stringify(message));
+    const messageDto = new DeviceMessageDto(
+      TEMPERATURE_WEEK,
+      temperatureBetweenDto,
+    );
 
-    const result = await lastValueFrom(this.masterService.sendMessage(dto));
+    const result = await lastValueFrom(
+      this.masterService.sendMessage(messageDto),
+    );
     console.log(result);
     return res.status(result.status).json(result);
   }
