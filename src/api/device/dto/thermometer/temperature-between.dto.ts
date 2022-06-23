@@ -1,5 +1,6 @@
-import { IsDateString, IsNumber } from 'class-validator';
+import { IsDate, IsDateString, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class TemperatureBetweenDto {
   @ApiProperty()
@@ -10,11 +11,17 @@ export class TemperatureBetweenDto {
   @IsNumber()
   slaveId: number;
 
-  @ApiProperty()
-  @IsDateString()
-  begin: string;
+  @ApiProperty({
+    description: `Date 형식: yyyy-MM-dd | yyyy/MM/dd | new Date()`,
+  })
+  @Type(() => Date)
+  @IsDate()
+  begin: Date;
 
-  @ApiProperty()
-  @IsDateString()
-  end: string;
+  @ApiProperty({
+    description: `Date 형식: yyyy-MM-dd | yyyy/MM/dd | new Date()`,
+  })
+  @Type(() => Date)
+  @IsDate()
+  end: Date;
 }
