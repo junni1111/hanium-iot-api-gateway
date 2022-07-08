@@ -17,7 +17,6 @@ import { ThermometerConfigDto } from './dto/thermometer/thermometer-config.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { MasterService } from './master.service';
 import { ThermometerService } from './thermometer.service';
-import { SlaveStateDto } from './dto/slave/slave-state.dto';
 import { THERMOMETER } from '../../util/constants/swagger';
 import { TemperatureBetweenDto } from './dto/thermometer/temperature-between.dto';
 
@@ -132,12 +131,15 @@ export class SlaveTemperatureController {
   }
 
   @Post('test/temperature')
-  async createTestTemperatureData(@Body() slaveStateDto: SlaveStateDto) {
+  async createTestTemperatureData(
+    @Body() temperatureBetweenDto: TemperatureBetweenDto,
+  ) {
     try {
       const result = await this.thermometerService.createTestData(
-        slaveStateDto,
+        temperatureBetweenDto,
       );
       console.log(result);
+      console.log(result.data.length);
 
       return result;
     } catch (e) {

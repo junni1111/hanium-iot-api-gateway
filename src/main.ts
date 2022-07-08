@@ -10,7 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Transport } from '@nestjs/microservices';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
-import {LED, MASTER, THERMOMETER, WATER_PUMP} from "./util/constants/swagger";
+import { LED, MASTER, THERMOMETER, WATER_PUMP } from './util/constants/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
