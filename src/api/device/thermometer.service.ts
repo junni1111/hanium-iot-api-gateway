@@ -35,7 +35,7 @@ export class ThermometerService {
     );
   }
 
-  async createTestData(dto: SlaveStateDto): Promise<ResponseStatus> {
+  async createTestData(dto: TemperatureBetweenDto): Promise<ResponseStatus> {
     return lastValueFrom(
       this.deviceMicroservice.sendMessage(
         new DeviceMessageDto('test/temperature', dto),
