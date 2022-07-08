@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
+import { ESlaveConfigTopic, ESlaveState } from '../../util/api-topic';
 import { LedConfigDto } from './dto/led/led-config.dto';
 import { LedStateDto } from './dto/led/led-state.dto';
 import { LedPowerDto } from './dto/led/led-power.dto';
