@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -16,7 +17,7 @@ import { WaterPumpPowerDto } from './dto/water-pump/water-pump-power.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { MasterService } from './master.service';
 import { WaterPumpService } from './water-pump.service';
-import {WATER_PUMP} from "../../util/constants/swagger";
+import { WATER_PUMP } from '../../util/constants/swagger';
 
 @ApiTags(WATER_PUMP)
 @Controller('api/device-service/water-pump')
@@ -27,11 +28,11 @@ export class SlaveWaterPumpController {
   ) {}
 
   @ApiOkResponse()
-  @Get('state/masters/:master_id/slaves/:slave_id')
+  @Get('state')
   async getWaterPumpState(
     @Res() res: Response,
-    @Param('master_id') masterId: number,
-    @Param('slave_id') slaveId: number,
+    @Query('master_id') masterId: number,
+    @Query('slave_id') slaveId: number,
   ) {
     try {
       const result = await this.waterPumpService.getWaterPumpState(
