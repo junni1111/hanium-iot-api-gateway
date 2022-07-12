@@ -23,7 +23,7 @@ import { MASTER } from '../../util/constants/swagger';
 export class MasterController {
   constructor(private readonly masterService: MasterService) {}
 
-  @Post('master')
+  @Post()
   async createMaster(
     @Res() res: Response,
     @Body() createMasterDto: CreateMasterDto,
