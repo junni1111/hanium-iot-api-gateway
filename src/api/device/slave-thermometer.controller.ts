@@ -92,22 +92,6 @@ export class SlaveTemperatureController {
     return res.status(result.status).json(result);
   }
 
-  @Get('state/masters/:master_id/slaves/:slave_id/')
-  async getTemperature(
-    @Param('master_id') masterId: string,
-    @Param('slave_id') slaveId: string,
-    @Res() res: Response,
-  ) {
-    /* TODO: Call Device MicroService Temperature Service*/
-    const message = { master_id: masterId, slave_id: slaveId };
-
-    console.log(message);
-    const dto = new DeviceMessageDto(THERMOMETER, JSON.stringify(message));
-
-    const result = await lastValueFrom(this.masterService.sendMessage(dto));
-    return res.status(result.status).json(result);
-  }
-
   @Post('config')
   async setThermometerConfig(
     @Res() res: Response,
