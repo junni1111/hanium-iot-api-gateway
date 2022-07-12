@@ -1,4 +1,12 @@
-import { Controller, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { DeviceMessageDto } from './dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
@@ -8,19 +16,24 @@ import { MasterService } from './master.service';
 import { CreateSlaveDto } from './dto/slave/create-slave.dto';
 import { SlaveStateDto } from './dto/slave/slave-state.dto';
 import { SLAVE } from '../../util/constants/swagger';
+import { ResponseStatus } from './interfaces/response-status';
+import { SlaveService } from './slave.service';
 
 @ApiTags(SLAVE)
-@Controller('api/device-service')
+@Controller('api/device-service/slave')
 export class SlaveController {
-  constructor(private readonly masterService: MasterService) {}
+  constructor(
+    private masterService: MasterService,
+    private slaveService: SlaveService,
+  ) {}
 
   /* Todo: Refactor URL path */
 
-  @Post('slave/:master_id/:slave_id')
+  @Post()
   async createSlave(
     @Res() res: Response,
-    @Param('master_id') masterId: number,
-    @Param('slave_id') slaveId: number,
+    @Query('master_id') masterId: number,
+    @Query('slave_id') slaveId: number,
   ) {
     try {
       const result = await this.masterService.createSlave(
@@ -33,12 +46,11 @@ export class SlaveController {
     }
   }
 
-  @ApiTags(SLAVE)
-  @Get('master/:master_id/slave/:slave_id/state')
+  @Get('state')
   async getSensorsState(
     @Res() res: Response,
-    @Param('master_id') masterId: number,
-    @Param('slave_id') slaveId: number,
+    @Query('master_id') masterId: number,
+    @Query('slave_id') slaveId: number,
   ) {
     const message = new DeviceMessageDto(
       ESlaveState.ALL,
@@ -47,5 +59,30 @@ export class SlaveController {
     const result = await lastValueFrom(this.masterService.sendMessage(message));
 
     return res.status(HttpStatus.OK).json(result);
+  }
+
+  @Get('config')
+  async fetchConfig(
+    @Res() res: Response,
+    @Query('master_id') masterId: number,
+    @Query('slave_id') slaveId: number,
+  ) {
+    try {
+      const slaveConfigs = await this.slaveService.getSlaveConfigs(
+        masterId,
+        slaveId,
+      );
+
+      const result: ResponseStatus = {
+        status: HttpStatus.OK,
+        topic: `configs`,
+        message: `success get slave configs`,
+        data: slaveConfigs,
+      };
+
+      return res.status(result.status).json(result);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

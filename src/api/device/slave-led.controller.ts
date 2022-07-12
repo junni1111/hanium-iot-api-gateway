@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -16,7 +17,7 @@ import { LedPowerDto } from './dto/led/led-power.dto';
 import { ResponseStatus } from './interfaces/response-status';
 import { LedService } from './led.service';
 import { MasterService } from './master.service';
-import {LED} from "../../util/constants/swagger";
+import { LED } from '../../util/constants/swagger';
 
 @ApiTags(LED)
 @Controller('api/device-service/led')
@@ -27,11 +28,11 @@ export class SlaveLedController {
   ) {}
 
   @ApiOkResponse()
-  @Get('state/masters/:master_id/slaves/:slave_id')
+  @Get('state')
   async getLedState(
     @Res() res: Response,
-    @Param('master_id') masterId: number,
-    @Param('slave_id') slaveId: number,
+    @Query('master_id') masterId: number,
+    @Query('slave_id') slaveId: number,
   ) {
     console.log(`Call Led State`);
     try {
