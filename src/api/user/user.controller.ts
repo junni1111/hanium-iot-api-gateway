@@ -17,7 +17,7 @@ import { lastValueFrom } from 'rxjs';
 import { ResponseStatus } from '../device/interfaces/response-status';
 import { Request, Response } from 'express';
 import { SignInDto } from './dto/sign-in.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { USER } from '../../util/constants/swagger';
 
 @ApiTags(USER)
@@ -43,9 +43,11 @@ export class UserController {
     }
   }
 
+  @ApiBearerAuth('access-token')
   @Post('jwt')
   async jwt(@Headers() header: any, @Res() res: Response) {
     const jwt = header['authorization']?.split(' ')[1];
+    console.log(`header : `, header);
 
     try {
       if (!jwt) {

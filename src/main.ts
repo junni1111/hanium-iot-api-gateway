@@ -11,6 +11,7 @@ import { Transport } from '@nestjs/microservices';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { LED, MASTER, THERMOMETER, WATER_PUMP } from './util/constants/swagger';
+import { setupSwagger } from './util/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,18 +27,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  const options = new DocumentBuilder()
-    .setTitle('IoT Gateway API')
-    .setDescription('IoT Microservice API 문서입니다')
-    .setVersion('1.0.14')
-    .addTag(MASTER)
-    .addTag(THERMOMETER)
-    .addTag(WATER_PUMP)
-    .addTag(LED)
-    .build();
-
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api-spec', app, document);
+  setupSwagger(app);
 
   console.log(
     `geteway ENV:${process.env.NODE_ENV} - rest host ${GATEWAY_HOST}, rest PORT ${GATEWAY_PORT}, device HOST ${DEVICE_HOST} device PORT ${DEVICE_PORT}`,

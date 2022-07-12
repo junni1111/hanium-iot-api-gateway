@@ -14,6 +14,7 @@ export class UserService {
   ping() {
     return this.userAuthClient.send('ping', 'pong').pipe((data) => data);
   }
+
   signUp(dto: CreateUserDto) {
     return this.userAuthClient.send({ cmd: 'sign_up' }, dto).pipe(
       map((data) => {
