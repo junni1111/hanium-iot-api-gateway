@@ -6,6 +6,7 @@ import {
   Logger,
   Param,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -50,10 +51,10 @@ export class SlaveTemperatureController {
     }
   }
 
-  @Get('temperature/now/masters/:master_id/slaves/:slave_id')
+  @Get('temperature/now')
   async getCurrentTemperature(
-    @Param('master_id') masterId: number,
-    @Param('slave_id') slaveId: number,
+    @Query('master_id') masterId: number,
+    @Query('slave_id') slaveId: number,
     @Res() res: Response,
   ) {
     try {
@@ -66,7 +67,7 @@ export class SlaveTemperatureController {
     } catch (e) {
       const response: ResponseStatus = {
         status: HttpStatus.BAD_REQUEST,
-        topic: ESlaveConfigTopic.WATER_PUMP,
+        topic: ESlaveConfigTopic.THERMOMETER,
         message: e.message,
       };
       return res.status(response.status).json(response);
