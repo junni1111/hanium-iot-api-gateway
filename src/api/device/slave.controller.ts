@@ -7,13 +7,15 @@ import { ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { CreateSlaveDto } from './dto/slave/create-slave.dto';
 import { SlaveStateDto } from './dto/slave/slave-state.dto';
-import {SLAVE} from "../../util/constants/swagger";
+import { SLAVE } from '../../util/constants/swagger';
 
+@ApiTags(SLAVE)
 @Controller('api/device-service')
 export class SlaveController {
   constructor(private readonly masterService: MasterService) {}
 
   /* Todo: Refactor URL path */
+
   @Post('slave/:master_id/:slave_id')
   async createSlave(
     @Res() res: Response,
