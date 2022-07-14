@@ -5,6 +5,7 @@ import { USER_AUTH_MICROSERVICE } from '../../util/constants/microservices';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { UtilityController } from './utility.controller';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UtilityController } from './utility.controller';
         },
       },
     ]),
+    HttpModule.register({ timeout: 5000, maxRedirects: 5 }),
   ],
   controllers: [UserController, UtilityController],
   providers: [UserService],
