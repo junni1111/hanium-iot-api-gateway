@@ -25,14 +25,19 @@ export class UserService {
   }
 
   jwt(jwt: string) {
-    return lastValueFrom(this.httpService.get(`${requestUrl}/jwt?jwt=${jwt}`));
+    return lastValueFrom(
+      this.httpService.get(`${requestUrl}/jwt`, { params: { jwt } }),
+    );
   }
 
   refresh(tokens: any) {
     return lastValueFrom(
-      this.httpService.get(
-        `${requestUrl}/refresh?access=${tokens.accessToken}&refresh=${tokens.refreshToken}`,
-      ),
+      this.httpService.get(`${requestUrl}/refresh`, {
+        params: {
+          access: tokens.accessToken,
+          refresh: tokens.refreshToken,
+        },
+      }),
     );
   }
 
