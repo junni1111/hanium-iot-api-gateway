@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { HttpService } from '@nestjs/axios';
 import { requestUrl } from '../../config/config';
-import { AxiosResponse } from 'axios';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -18,28 +18,31 @@ export class UserService {
     return this.userAuthClient.send('ping', 'pong').pipe((data) => data);
   }
 
-  signUp(createUserDto: CreateUserDto): Promise<AxiosResponse<any>> {
-    return this.httpService.axiosRef.post(
-      `${requestUrl}/signup`,
-      createUserDto,
+  signUp(createUserDto: CreateUserDto) {
+    return lastValueFrom(
+      this.httpService.post(`${requestUrl}/signup`, createUserDto),
     );
   }
 
-  jwt(jwt: string): Promise<AxiosResponse<any>> {
-    return this.httpService.axiosRef.get(`${requestUrl}/jwt?jwt=${jwt}`);
+  jwt(jwt: string) {
+    return lastValueFrom(this.httpService.get(`${requestUrl}/jwt?jwt=${jwt}`));
   }
 
-  refresh(tokens: any): Promise<AxiosResponse<any>> {
-    return this.httpService.axiosRef.get(
-      `${requestUrl}/refresh?access=${tokens.accessToken}&refresh=${tokens.refreshToken}`,
+  refresh(tokens: any) {
+    return lastValueFrom(
+      this.httpService.get(
+        `${requestUrl}/refresh?access=${tokens.accessToken}&refresh=${tokens.refreshToken}`,
+      ),
     );
   }
 
   /** Todo: Replace to JWT */
-  signIn(signInDto: SignInDto): Promise<AxiosResponse<any>> {
-    return this.httpService.axiosRef.post(`${requestUrl}/signin`, {
-      email: signInDto.email,
-      password: signInDto.password,
-    });
+  signIn(signInDto: SignInDto) {
+    return lastValueFrom(
+      this.httpService.post(`${requestUrl}/signin`, {
+        email: signInDto.email,
+        password: signInDto.password,
+      }),
+    );
   }
 }

@@ -29,8 +29,8 @@ export class UserController {
   ) {
     try {
       /** Todo: Refactor result */
-      const signUpResult = await this.userService.signUp(createUserDto);
-      console.log('signup : ', signUpResult);
+      const { data } = await this.userService.signUp(createUserDto);
+      console.log('signup : ', data);
 
       return res.send({
         statusCode: HttpStatus.CREATED,
@@ -57,8 +57,8 @@ export class UserController {
         throw new NotFoundException('Jwt Not Found');
       }
 
-      const result = await this.userService.jwt(jwt);
-      console.log(`Get Result: `, result);
+      const { data } = await this.userService.jwt(jwt);
+      console.log(`Get Result: `, data);
 
       return res.send({
         statusCode: HttpStatus.OK,
@@ -84,8 +84,8 @@ export class UserController {
     }
 
     try {
-      const result = await this.userService.refresh(tokens);
-      tokens.accessToken = result.data;
+      const { data } = await this.userService.refresh(tokens);
+      tokens.accessToken = data;
       res.cookie('auth-cookie', tokens);
 
       return res.send({
@@ -112,6 +112,7 @@ export class UserController {
   ) {
     try {
       const { data: tokens } = await this.userService.signIn(signInDto);
+
       /** Todo: Set JWT */
       res.cookie('auth-cookie', tokens, { httpOnly: true });
 

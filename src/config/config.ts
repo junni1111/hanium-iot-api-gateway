@@ -23,5 +23,7 @@ export const DEVICE_PORT =
   Number(process.env.DEVICE_PORT_8888_TCP_PORT) ||
   Number(process.env.DEVICE_PORT) ||
   8888;
+/** Todo: AWS ECS 컨테이너 포트 맵핑 9999 -> 9000 수정 */
 export const USER_AUTH_PORT = Number(process.env.USER_AUTH_PORT) || 9999;
+/** Todo: AWS ECS 컨테이너 맵핑 필요 */
 export const requestUrl = `http://${process.env.USER_AUTH_HOST}:${process.env.USER_AUTH_REST_PORT}`;
