@@ -1,74 +1,45 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { USER_AUTH_MICROSERVICE } from '../../util/constants/microservices';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
-import { catchError, map } from 'rxjs';
 import { SignInDto } from './dto/sign-in.dto';
+import { HttpService } from '@nestjs/axios';
+import { requestUrl } from '../../config/config';
+import { AxiosResponse } from 'axios';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject(USER_AUTH_MICROSERVICE) private userAuthClient: ClientProxy,
+    private readonly httpService: HttpService,
   ) {}
 
   ping() {
     return this.userAuthClient.send('ping', 'pong').pipe((data) => data);
   }
 
-  signUp(dto: CreateUserDto) {
-    return this.userAuthClient.send({ cmd: 'sign_up' }, dto).pipe(
-      map((data) => {
-        if (!data.id) {
-          throw data;
-        }
-
-        return data;
-      }),
-      catchError((e) => {
-        throw e.response;
-      }),
+  signUp(createUserDto: CreateUserDto): Promise<AxiosResponse<any>> {
+    return this.httpService.axiosRef.post(
+      `${requestUrl}/signup`,
+      createUserDto,
     );
   }
 
-  jwt(jwt: string) {
-    return this.userAuthClient.send({ cmd: 'jwt' }, jwt).pipe(
-      map((user) => {
-        Logger.debug(user);
-        return user;
-      }),
-      catchError((e) => {
-        Logger.error(e);
-        throw e;
-      }),
-    );
+  jwt(jwt: string): Promise<AxiosResponse<any>> {
+    return this.httpService.axiosRef.get(`${requestUrl}/jwt?jwt=${jwt}`);
   }
 
-  refresh(tokens: any) {
-    return this.userAuthClient.send({ cmd: 'refresh' }, tokens).pipe(
-      map((data) => data),
-      catchError((e) => {
-        throw e;
-      }),
+  refresh(tokens: any): Promise<AxiosResponse<any>> {
+    return this.httpService.axiosRef.get(
+      `${requestUrl}/refresh?access=${tokens.accessToken}&refresh=${tokens.refreshToken}`,
     );
   }
 
   /** Todo: Replace to JWT */
-  signIn(dto: SignInDto) {
-    Logger.debug(`Send DTO: `, { email: dto.email, password: dto.password });
-    return this.userAuthClient
-      .send(
-        { cmd: 'sign_in' },
-        { user: { email: dto.email, password: dto.password } },
-      )
-      .pipe(
-        map((data) => {
-          Logger.debug(`In Map: `, data);
-          return data;
-        }),
-        catchError((e) => {
-          Logger.debug(`Catch Map : `, e);
-          throw e;
-        }),
-      );
+  signIn(signInDto: SignInDto): Promise<AxiosResponse<any>> {
+    return this.httpService.axiosRef.post(`${requestUrl}/signin`, {
+      email: signInDto.email,
+      password: signInDto.password,
+    });
   }
 }

@@ -24,3 +24,4 @@ export const DEVICE_PORT =
   Number(process.env.DEVICE_PORT) ||
   8888;
 export const USER_AUTH_PORT = Number(process.env.USER_AUTH_PORT) || 9999;
+export const requestUrl = `http://${process.env.USER_AUTH_HOST}:${process.env.USER_AUTH_REST_PORT}`;

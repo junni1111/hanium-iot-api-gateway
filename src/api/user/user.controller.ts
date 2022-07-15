@@ -2,19 +2,15 @@ import { UserService } from './user.service';
 import {
   Body,
   Controller,
-  ForbiddenException,
-  Get,
   Headers,
+  HttpException,
   HttpStatus,
-  Logger,
   NotFoundException,
   Post,
   Req,
   Res,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { lastValueFrom } from 'rxjs';
-import { ResponseStatus } from '../device/interfaces/response-status';
 import { Request, Response } from 'express';
 import { SignInDto } from './dto/sign-in.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -25,21 +21,29 @@ import { USER } from '../../util/constants/swagger';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('user')
-  async signUp(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+  @Post('signup')
+  async signUp(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() createUserDto: CreateUserDto,
+  ) {
     try {
       /** Todo: Refactor result */
-      const signUpResult = await lastValueFrom(
-        this.userService.signUp(createUserDto),
-      );
+      const signUpResult = await this.userService.signUp(createUserDto);
+      console.log('signup : ', signUpResult);
 
       return res.send({
-        status: HttpStatus.CREATED,
-        topic: `sign-up`,
+        statusCode: HttpStatus.CREATED,
         message: `success sign up`,
       });
     } catch (e) {
-      throw e;
+      throw new HttpException(
+        {
+          status: e.response.data.statusCode,
+          message: e.response.data.message,
+        },
+        e.response.data.statusCode,
+      );
     }
   }
 
@@ -47,44 +51,56 @@ export class UserController {
   @Post('jwt')
   async jwt(@Headers() header: any, @Res() res: Response) {
     const jwt = header['authorization']?.split(' ')[1];
-    console.log(`header : `, header);
 
     try {
       if (!jwt) {
-        throw new NotFoundException('JWT Not Found');
+        throw new NotFoundException('Jwt Not Found');
       }
 
-      const result = await lastValueFrom(this.userService.jwt(jwt));
+      const result = await this.userService.jwt(jwt);
       console.log(`Get Result: `, result);
 
-      return res.status(HttpStatus.OK).send(result);
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'Jwt Is Validate',
+      });
     } catch (e) {
-      /** Throw UnauthorizedException */
-      throw e.response;
+      throw new HttpException(
+        {
+          statusCode: e.response.data.statusCode,
+          message: e.response.data.message,
+        },
+        e.response.data.statusCode,
+      );
     }
   }
 
   @Post('refresh')
   async refreshToken(@Req() req: Request, @Res() res: Response) {
     const tokens = req.cookies['auth-cookie'];
+    console.log('tokens : ', tokens);
     if (!tokens) {
       throw new NotFoundException('Auth Cookie Not Found');
     }
 
     try {
-      const result = await lastValueFrom(this.userService.refresh(tokens));
-      console.log(result);
-      tokens.accessToken = result;
-      res.cookie('auth-cookie', { ...tokens });
+      const result = await this.userService.refresh(tokens);
+      tokens.accessToken = result.data;
+      res.cookie('auth-cookie', tokens);
 
-      const response: ResponseStatus = {
-        status: HttpStatus.OK,
-        topic: 'refresh',
-        message: 'success refresh access token',
-      };
-      return res.status(HttpStatus.OK).send(response);
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'Jwt Is Refreshed',
+      });
     } catch (e) {
-      Logger.error(e);
+      console.log('error: ', e);
+      throw new HttpException(
+        {
+          statusCode: e.response.data.statusCode,
+          message: e.response.data.message,
+        },
+        e.response.data.statusCode,
+      );
     }
   }
 
@@ -92,17 +108,25 @@ export class UserController {
   async signIn(
     @Req() req: Request,
     @Res() res: Response,
-    @Body() createUserDto: SignInDto,
+    @Body() signInDto: SignInDto,
   ) {
     try {
-      const tokens = await lastValueFrom(
-        this.userService.signIn(createUserDto),
-      );
+      const { data: tokens } = await this.userService.signIn(signInDto);
       /** Todo: Set JWT */
       res.cookie('auth-cookie', tokens, { httpOnly: true });
-      return res.status(HttpStatus.OK).send(tokens);
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'signin completed',
+      });
     } catch (e) {
-      throw new ForbiddenException('유효하지 않은 사용자 정보입니다');
+      throw new HttpException(
+        {
+          statusCode: e.response.data.statusCode,
+          message: e.response.data.message,
+        },
+        e.response.data.statusCode,
+      );
     }
   }
 }
