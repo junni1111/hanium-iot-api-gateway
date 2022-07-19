@@ -85,15 +85,19 @@ export class UserController {
 
     try {
       const { data } = await this.userService.refresh(tokens);
-      tokens.accessToken = data;
-      res.cookie('auth-cookie', tokens);
+      res.cookie(
+        'auth-cookie',
+        { userId: data.userId, refreshToken: data.refreshToken },
+        { httpOnly: true },
+      );
 
       return res.send({
         statusCode: HttpStatus.OK,
         message: 'Jwt Is Refreshed',
+        accessToken: data.accessToken,
       });
     } catch (e) {
-      console.log('error: ', e);
+      // console.log('error: ', e);
       throw new HttpException(
         {
           statusCode: e.response.data.statusCode,
@@ -111,14 +115,19 @@ export class UserController {
     @Body() signInDto: SignInDto,
   ) {
     try {
-      const { data: tokens } = await this.userService.signIn(signInDto);
+      const { data } = await this.userService.signIn(signInDto);
 
       /** Todo: Set JWT */
-      res.cookie('auth-cookie', tokens, { httpOnly: true });
+      res.cookie(
+        'auth-cookie',
+        { userId: data.userId, refreshToken: data.refreshToken },
+        { httpOnly: true },
+      );
 
       return res.send({
         statusCode: HttpStatus.OK,
         message: 'signin completed',
+        accessToken: data.accessToken,
       });
     } catch (e) {
       throw new HttpException(
