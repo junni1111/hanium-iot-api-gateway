@@ -34,7 +34,7 @@ export class UserService {
     return lastValueFrom(
       this.httpService.get(`${requestUrl}/refresh`, {
         params: {
-          access: tokens.accessToken,
+          userId: tokens.userId,
           refresh: tokens.refreshToken,
         },
       }),
