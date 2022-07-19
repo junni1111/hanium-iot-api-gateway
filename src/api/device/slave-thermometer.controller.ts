@@ -4,7 +4,6 @@ import {
   Get,
   HttpStatus,
   Logger,
-  Param,
   Post,
   Query,
   Res,
@@ -123,8 +122,8 @@ export class SlaveTemperatureController {
       const result = await this.thermometerService.createTestData(
         temperatureBetweenDto,
       );
-      console.log(result);
-      console.log(result.data.length);
+      // console.log(result);
+      // console.log(result.data.length);
 
       return result;
     } catch (e) {
