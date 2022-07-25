@@ -13,7 +13,8 @@ export class UserService {
   ) {}
   requestUrl = `http://${this.configService.get<string>(
     'USER_AUTH_HOST',
-  )}:${this.configService.get<number>('USER_AUTH_REST_PORT')}`;
+    '0.0.0.0',
+  )}:${this.configService.get<number>('AUTH_PORT_9000_TCP_PORT', 9000)}`;
 
   ping() {
     return lastValueFrom(this.httpService.get(`${this.requestUrl}/`));
