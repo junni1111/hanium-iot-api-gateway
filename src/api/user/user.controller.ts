@@ -88,8 +88,7 @@ export class UserController {
       res.cookie(
         'auth-cookie',
         { userId: data.userId, refreshToken: data.refreshToken },
-        { httpOnly: true },
-        //, domain: process.env.COOKIE_DOMAIN
+        { httpOnly: true, domain: process.env.COOKIE_DOMAIN },
       );
 
       return res.send({
@@ -98,7 +97,6 @@ export class UserController {
         accessToken: data.accessToken,
       });
     } catch (e) {
-      // console.log('error: ', e);
       throw new HttpException(
         {
           statusCode: e.response.data.statusCode,
@@ -121,8 +119,7 @@ export class UserController {
       res.cookie(
         'auth-cookie',
         { userId: data.userId, refreshToken: data.refreshToken },
-        { httpOnly: true },
-        //, domain: process.env.COOKIE_DOMAIN
+        { httpOnly: true, domain: process.env.COOKIE_DOMAIN },
       );
 
       return res.send({
@@ -151,11 +148,10 @@ export class UserController {
 
     try {
       const { data } = await this.userService.signOut(tokens.userId);
-      res.clearCookie(
-        'auth-cookie',
-        { httpOnly: true },
-        //, domain: process.env.COOKIE_DOMAIN
-      );
+      res.clearCookie('auth-cookie', {
+        httpOnly: true,
+        domain: process.env.COOKIE_DOMAIN,
+      });
 
       return res.send({
         statusCode: HttpStatus.OK,
