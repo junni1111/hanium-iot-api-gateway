@@ -1,38 +1,39 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { USER_AUTH_MICROSERVICE } from '../../util/constants/microservices';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { HttpService } from '@nestjs/axios';
-import { requestUrl } from '../../config/config';
 import { lastValueFrom } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(USER_AUTH_MICROSERVICE) private userAuthClient: ClientProxy,
     private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
   ) {}
+  requestUrl = `http://${this.configService.get<string>(
+    'USER_AUTH_HOST',
+  )}:${this.configService.get<number>('USER_AUTH_REST_PORT')}`;
 
   ping() {
-    return this.userAuthClient.send('ping', 'pong').pipe((data) => data);
+    return lastValueFrom(this.httpService.get(`${this.requestUrl}/`));
   }
 
   signUp(createUserDto: CreateUserDto) {
     return lastValueFrom(
-      this.httpService.post(`${requestUrl}/signup`, createUserDto),
+      this.httpService.post(`${this.requestUrl}/signup`, createUserDto),
     );
   }
 
   jwt(jwt: string) {
     return lastValueFrom(
-      this.httpService.get(`${requestUrl}/jwt`, { params: { jwt } }),
+      this.httpService.get(`${this.requestUrl}/jwt`, { params: { jwt } }),
     );
   }
 
   refresh(tokens: any) {
     return lastValueFrom(
-      this.httpService.get(`${requestUrl}/refresh`, {
+      this.httpService.get(`${this.requestUrl}/refresh`, {
         params: {
           userId: tokens.userId,
           refresh: tokens.refreshToken,
@@ -44,9 +45,19 @@ export class UserService {
   /** Todo: Replace to JWT */
   signIn(signInDto: SignInDto) {
     return lastValueFrom(
-      this.httpService.post(`${requestUrl}/signin`, {
+      this.httpService.post(`${this.requestUrl}/signin`, {
         email: signInDto.email,
         password: signInDto.password,
+      }),
+    );
+  }
+
+  signOut(userId: number) {
+    return lastValueFrom(
+      this.httpService.get(`${this.requestUrl}/signout`, {
+        params: {
+          userId,
+        },
       }),
     );
   }

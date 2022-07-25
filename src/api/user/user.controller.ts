@@ -2,6 +2,7 @@ import { UserService } from './user.service';
 import {
   Body,
   Controller,
+  Get,
   Headers,
   HttpException,
   HttpStatus,
@@ -51,12 +52,11 @@ export class UserController {
   @Post('jwt')
   async jwt(@Headers() header: any, @Res() res: Response) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
-      if (!jwt) {
-        throw new NotFoundException('Jwt Not Found');
-      }
-
       const { data } = await this.userService.jwt(jwt);
       console.log(`Get Result: `, data);
 
@@ -88,7 +88,7 @@ export class UserController {
       res.cookie(
         'auth-cookie',
         { userId: data.userId, refreshToken: data.refreshToken },
-        { httpOnly: true },
+        { httpOnly: true, domain: process.env.COOKIE_DOMAIN },
       );
 
       return res.send({
@@ -97,7 +97,6 @@ export class UserController {
         accessToken: data.accessToken,
       });
     } catch (e) {
-      // console.log('error: ', e);
       throw new HttpException(
         {
           statusCode: e.response.data.statusCode,
@@ -117,11 +116,10 @@ export class UserController {
     try {
       const { data } = await this.userService.signIn(signInDto);
 
-      /** Todo: Set JWT */
       res.cookie(
         'auth-cookie',
         { userId: data.userId, refreshToken: data.refreshToken },
-        { httpOnly: true },
+        { httpOnly: true, domain: process.env.COOKIE_DOMAIN },
       );
 
       return res.send({
@@ -137,6 +135,30 @@ export class UserController {
         },
         e.response.data.statusCode,
       );
+    }
+  }
+
+  @Get('signout')
+  async signOut(@Req() req: Request, @Res() res: Response) {
+    const tokens = req.cookies['auth-cookie'];
+    console.log(`cookie : `, tokens);
+    if (!tokens) {
+      throw new NotFoundException('Cookie Not Exist');
+    }
+
+    try {
+      const { data } = await this.userService.signOut(tokens.userId);
+      res.clearCookie('auth-cookie', {
+        httpOnly: true,
+        domain: process.env.COOKIE_DOMAIN,
+      });
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'signout completed',
+      });
+    } catch (e) {
+      throw e;
     }
   }
 }

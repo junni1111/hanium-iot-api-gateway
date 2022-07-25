@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { DEVICE_HOST, DEVICE_PORT } from '../../config/config';
+import { ClientsModule } from '@nestjs/microservices';
 import { ThermometerService } from './thermometer.service';
 import { WaterPumpService } from './water-pump.service';
 import { LedService } from './led.service';
@@ -15,17 +14,16 @@ import { SlaveWaterPumpController } from './slave-water-pump.controller';
 import { SlaveFanController } from './slave-fan.controller';
 import { FanService } from './fan.service';
 import { DEVICE_MICROSERVICE } from '../../util/constants/microservices';
+import { ClientsDeviceConfigService } from '../../config/clients/clients.device.service';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: DEVICE_MICROSERVICE,
-        transport: Transport.TCP,
-        options: {
-          host: DEVICE_HOST,
-          port: DEVICE_PORT,
-        },
+        imports: [ClientsModule],
+        useClass: ClientsDeviceConfigService,
+        inject: [ClientsDeviceConfigService],
       },
     ]),
   ],
