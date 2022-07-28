@@ -36,7 +36,7 @@ async function bootstrap() {
     `geteway ENV:${process.env.NODE_ENV} - rest host ${GATEWAY_HOST}, rest PORT ${GATEWAY_PORT}, device HOST ${DEVICE_HOST} device PORT ${DEVICE_PORT}`,
   );
 
-  //console.log(`ENV List: `, process.env);
+  console.log(`ENV List: `, process.env);
   await app.listen(GATEWAY_PORT);
 }
 
