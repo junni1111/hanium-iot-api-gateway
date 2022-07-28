@@ -9,10 +9,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const DEVICE_HOST = configService.get<string>('DEVICE_HOST');
-  const DEVICE_PORT = configService.get<number>(
-    'DEVICE_PORT_8888_TCP_PORT',
-    configService.get<number>('DEVICE_PORT', 8888),
-  );
+  const DEVICE_PORT =
+    configService.get<number>('DEVICE_PORT_8888_TCP_PORT') ||
+    configService.get<number>('DEVICE_PORT', 8888);
   const GATEWAY_HOST = configService.get<string>('GATEWAY_HOST');
   const GATEWAY_PORT = configService.get<number>('GATEWAY_PORT', 7777);
 
