@@ -7,7 +7,7 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { MasterService } from '../master/master.service';
 import { FanService } from './fan.service';
@@ -15,6 +15,7 @@ import { SlavePowerDto } from '../dto/slave/slave-power.dto';
 import { FAN } from '../../../util/constants/swagger';
 
 @ApiTags(FAN)
+@ApiBearerAuth('access-token')
 @Controller('api/device-service/fan')
 export class SlaveFanController {
   constructor(

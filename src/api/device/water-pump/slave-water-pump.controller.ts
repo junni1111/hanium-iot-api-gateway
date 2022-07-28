@@ -9,7 +9,7 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
 import { WaterPumpConfigDto } from '../dto/water-pump/water-pump-config.dto';
@@ -21,6 +21,7 @@ import { WaterPumpService } from './water-pump.service';
 import { WATER_PUMP } from '../../../util/constants/swagger';
 
 @ApiTags(WATER_PUMP)
+@ApiBearerAuth('access-token')
 @Controller('api/device-service/water-pump')
 export class SlaveWaterPumpController {
   constructor(

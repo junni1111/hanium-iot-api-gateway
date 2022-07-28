@@ -12,7 +12,7 @@ import { Response } from 'express';
 import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import { ESlaveState } from '../../../util/api-topic';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MasterService } from '../master/master.service';
 import { CreateSlaveDto } from '../dto/slave/create-slave.dto';
 import { SlaveStateDto } from '../dto/slave/slave-state.dto';
@@ -21,6 +21,7 @@ import { ResponseStatus } from '../interfaces/response-status';
 import { SlaveService } from './slave.service';
 
 @ApiTags(SLAVE)
+@ApiBearerAuth('access-token')
 @Controller('api/device-service/slave')
 export class SlaveController {
   constructor(

@@ -13,12 +13,13 @@ import { Response } from 'express';
 import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import { CreateMasterDto } from '../dto/master/create-master.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { POLLING } from '../../../util/api-topic';
 import { MASTER } from '../../../util/constants/swagger';
 
 @ApiTags(MASTER)
+@ApiBearerAuth('access-token')
 @Controller('api/device-service/master')
 export class MasterController {
   constructor(private readonly masterService: MasterService) {}

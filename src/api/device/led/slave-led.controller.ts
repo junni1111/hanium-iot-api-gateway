@@ -9,7 +9,7 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic, ESlaveState } from '../../../util/api-topic';
 import { LedConfigDto } from '../dto/led/led-config.dto';
@@ -21,6 +21,7 @@ import { MasterService } from '../master/master.service';
 import { LED } from '../../../util/constants/swagger';
 
 @ApiTags(LED)
+@ApiBearerAuth('access-token')
 @Controller('api/device-service/led')
 export class SlaveLedController {
   constructor(
