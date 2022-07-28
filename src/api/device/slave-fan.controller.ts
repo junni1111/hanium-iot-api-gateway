@@ -1,10 +1,17 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { MasterService } from './master.service';
 import { FanService } from './fan.service';
 import { SlavePowerDto } from './dto/slave/slave-power.dto';
-import {FAN} from "../../util/constants/swagger";
+import { FAN } from '../../util/constants/swagger';
 
 @ApiTags(FAN)
 @Controller('api/device-service/fan')
@@ -15,7 +22,13 @@ export class SlaveFanController {
   ) {}
 
   @Post('config/power')
-  async setPowerFan(@Res() res: Response, @Body() fanPowerDto: SlavePowerDto) {
+  async setPowerFan(
+    @Headers() header: any,
+    @Res() res: Response,
+    @Body() fanPowerDto: SlavePowerDto,
+  ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       console.log(`@@@@@@ Turn Fan Power`);
       const result = await this.fanService.turnFan(fanPowerDto);

@@ -2,8 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpStatus,
-  Param,
   Post,
   Query,
   Res,
@@ -15,7 +15,6 @@ import { CreateMasterDto } from './dto/master/create-master.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { POLLING } from '../../util/api-topic';
-import { SlaveService } from './slave.service';
 import { MASTER } from '../../util/constants/swagger';
 
 @ApiTags(MASTER)
@@ -25,9 +24,11 @@ export class MasterController {
 
   @Post()
   async createMaster(
+    @Headers() header: any,
     @Res() res: Response,
     @Body() createMasterDto: CreateMasterDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
     try {
       const result = await this.masterService.createMaster(createMasterDto);
 
@@ -57,8 +58,9 @@ export class MasterController {
   /* TODO: Make Polling DTO*/
   @Get('state')
   async getMasterState(
-    @Query('master_id') masterId: number,
+    @Headers() header: any,
     @Res() res: Response,
+    @Query('master_id') masterId: number,
   ) {
     try {
       const dto = new DeviceMessageDto(POLLING, masterId.toString());

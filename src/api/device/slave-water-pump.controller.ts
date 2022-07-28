@@ -2,8 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpStatus,
-  Param,
   Post,
   Query,
   Res,
@@ -30,10 +30,13 @@ export class SlaveWaterPumpController {
   @ApiOkResponse()
   @Get('state')
   async getWaterPumpState(
+    @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const result = await this.waterPumpService.getWaterPumpState(
         new WaterPumpStateDto(masterId, slaveId),
@@ -53,9 +56,12 @@ export class SlaveWaterPumpController {
 
   @Post('config')
   async setWaterPumpConfig(
+    @Headers() header: any,
     @Res() res: Response,
     @Body() waterConfigDto: WaterPumpConfigDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const result: ResponseStatus =
         await this.waterPumpService.setWaterPumpConfig(waterConfigDto);
@@ -74,9 +80,12 @@ export class SlaveWaterPumpController {
 
   @Post('config/power')
   async setPowerWaterPump(
+    @Headers() header: any,
     @Res() res: Response,
     @Body() waterPumpPowerDto: WaterPumpPowerDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const result = await this.waterPumpService.turnWaterPump(
         waterPumpPowerDto,

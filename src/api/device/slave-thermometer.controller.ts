@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpStatus,
   Logger,
   Post,
@@ -30,9 +31,12 @@ export class SlaveTemperatureController {
 
   @Post('temperature/between')
   async getTemperatures(
-    @Body() dto: TemperatureBetweenDto,
+    @Headers() header: any,
     @Res() res: Response,
+    @Body() dto: TemperatureBetweenDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const result = await this.thermometerService.getTemperatures(dto);
       Logger.debug(`날짜 범위 온도: `, result);
@@ -52,10 +56,13 @@ export class SlaveTemperatureController {
 
   @Get('temperature/now')
   async getCurrentTemperature(
+    @Headers() header: any,
+    @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
-    @Res() res: Response,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const response = await this.thermometerService.getCurrentTemperature(
         masterId,
@@ -76,9 +83,12 @@ export class SlaveTemperatureController {
   /** Todo: 재한이한테 URL 수정 알려주기 */
   @Post('temperature/week')
   async getTemperatureOneWeek(
-    @Body() temperatureBetweenDto: TemperatureBetweenDto,
+    @Headers() header: any,
     @Res() res: Response,
+    @Body() temperatureBetweenDto: TemperatureBetweenDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     const messageDto = new DeviceMessageDto(
       TEMPERATURE_WEEK,
       temperatureBetweenDto,
@@ -93,9 +103,12 @@ export class SlaveTemperatureController {
 
   @Post('config')
   async setThermometerConfig(
+    @Headers() header: any,
     @Res() res: Response,
     @Body() thermometerConfigDto: ThermometerConfigDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const result: ResponseStatus =
         await this.thermometerService.setThermometerConfig(
@@ -116,8 +129,11 @@ export class SlaveTemperatureController {
 
   @Post('test/temperature')
   async createTestTemperatureData(
+    @Headers() header: any,
     @Body() temperatureBetweenDto: TemperatureBetweenDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const result = await this.thermometerService.createTestData(
         temperatureBetweenDto,

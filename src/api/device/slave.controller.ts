@@ -1,8 +1,8 @@
 import {
   Controller,
   Get,
+  Headers,
   HttpStatus,
-  Param,
   Post,
   Query,
   Res,
@@ -31,10 +31,13 @@ export class SlaveController {
 
   @Post()
   async createSlave(
+    @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const result = await this.masterService.createSlave(
         new CreateSlaveDto(masterId, slaveId),
@@ -48,10 +51,13 @@ export class SlaveController {
 
   @Get('state')
   async getSensorsState(
+    @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     const message = new DeviceMessageDto(
       ESlaveState.ALL,
       new SlaveStateDto(masterId, slaveId),
@@ -63,10 +69,13 @@ export class SlaveController {
 
   @Get('config')
   async fetchConfig(
+    @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+
     try {
       const slaveConfigs = await this.slaveService.getSlaveConfigs(
         masterId,
