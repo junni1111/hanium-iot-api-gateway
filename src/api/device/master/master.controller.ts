@@ -4,18 +4,19 @@ import {
   Get,
   Headers,
   HttpStatus,
+  NotFoundException,
   Post,
   Query,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { DeviceMessageDto } from './dto/device-message.dto';
+import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
-import { CreateMasterDto } from './dto/master/create-master.dto';
+import { CreateMasterDto } from '../dto/master/create-master.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
-import { POLLING } from '../../util/api-topic';
-import { MASTER } from '../../util/constants/swagger';
+import { POLLING } from '../../../util/api-topic';
+import { MASTER } from '../../../util/constants/swagger';
 
 @ApiTags(MASTER)
 @Controller('api/device-service/master')
@@ -29,6 +30,11 @@ export class MasterController {
     @Body() createMasterDto: CreateMasterDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
+    // Todo : jwt 유효성 확인 및 사용자 정보 확인
+
     try {
       const result = await this.masterService.createMaster(createMasterDto);
 
@@ -62,6 +68,11 @@ export class MasterController {
     @Res() res: Response,
     @Query('master_id') masterId: number,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
+
     try {
       const dto = new DeviceMessageDto(POLLING, masterId.toString());
       const result = await lastValueFrom(this.masterService.sendMessage(dto));

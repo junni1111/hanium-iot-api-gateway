@@ -5,6 +5,7 @@ import {
   Headers,
   HttpStatus,
   Logger,
+  NotFoundException,
   Post,
   Query,
   Res,
@@ -13,13 +14,13 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { lastValueFrom } from 'rxjs';
 import { ESlaveConfigTopic, TEMPERATURE_WEEK } from 'src/util/api-topic';
-import { DeviceMessageDto } from './dto/device-message.dto';
-import { ThermometerConfigDto } from './dto/thermometer/thermometer-config.dto';
-import { ResponseStatus } from './interfaces/response-status';
-import { MasterService } from './master.service';
+import { DeviceMessageDto } from '../dto/device-message.dto';
+import { ThermometerConfigDto } from '../dto/thermometer/thermometer-config.dto';
+import { ResponseStatus } from '../interfaces/response-status';
+import { MasterService } from '../master/master.service';
 import { ThermometerService } from './thermometer.service';
-import { THERMOMETER } from '../../util/constants/swagger';
-import { TemperatureBetweenDto } from './dto/thermometer/temperature-between.dto';
+import { THERMOMETER } from '../../../util/constants/swagger';
+import { TemperatureBetweenDto } from '../dto/thermometer/temperature-between.dto';
 
 @ApiTags(THERMOMETER)
 @Controller('api/device-service/thermometer')
@@ -36,6 +37,9 @@ export class SlaveTemperatureController {
     @Body() dto: TemperatureBetweenDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       const result = await this.thermometerService.getTemperatures(dto);
@@ -62,6 +66,9 @@ export class SlaveTemperatureController {
     @Query('slave_id') slaveId: number,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       const response = await this.thermometerService.getCurrentTemperature(
@@ -88,6 +95,9 @@ export class SlaveTemperatureController {
     @Body() temperatureBetweenDto: TemperatureBetweenDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     const messageDto = new DeviceMessageDto(
       TEMPERATURE_WEEK,
@@ -108,6 +118,9 @@ export class SlaveTemperatureController {
     @Body() thermometerConfigDto: ThermometerConfigDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       const result: ResponseStatus =
@@ -133,6 +146,9 @@ export class SlaveTemperatureController {
     @Body() temperatureBetweenDto: TemperatureBetweenDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       const result = await this.thermometerService.createTestData(

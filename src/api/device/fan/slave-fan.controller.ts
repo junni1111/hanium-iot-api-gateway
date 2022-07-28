@@ -3,15 +3,16 @@ import {
   Controller,
   Headers,
   HttpStatus,
+  NotFoundException,
   Post,
   Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { MasterService } from './master.service';
+import { MasterService } from '../master/master.service';
 import { FanService } from './fan.service';
-import { SlavePowerDto } from './dto/slave/slave-power.dto';
-import { FAN } from '../../util/constants/swagger';
+import { SlavePowerDto } from '../dto/slave/slave-power.dto';
+import { FAN } from '../../../util/constants/swagger';
 
 @ApiTags(FAN)
 @Controller('api/device-service/fan')
@@ -28,6 +29,9 @@ export class SlaveFanController {
     @Body() fanPowerDto: SlavePowerDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       console.log(`@@@@@@ Turn Fan Power`);

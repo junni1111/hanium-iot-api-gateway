@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DeviceMessageDto } from './dto/device-message.dto';
+import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
-import { ESlaveTurnPowerTopic } from '../../util/api-topic';
-import { MasterService } from './master.service';
-import { SlavePowerDto } from './dto/slave/slave-power.dto';
+import { ESlaveTurnPowerTopic } from '../../../util/api-topic';
+import { MasterService } from '../master/master.service';
+import { SlavePowerDto } from '../dto/slave/slave-power.dto';
 
 @Injectable()
 export class FanService {

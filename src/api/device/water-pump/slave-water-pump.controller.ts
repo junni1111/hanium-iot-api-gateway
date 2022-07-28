@@ -4,6 +4,7 @@ import {
   Get,
   Headers,
   HttpStatus,
+  NotFoundException,
   Post,
   Query,
   Res,
@@ -11,13 +12,13 @@ import {
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
-import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
-import { WaterPumpStateDto } from './dto/water-pump/water-pump-state.dto';
-import { WaterPumpPowerDto } from './dto/water-pump/water-pump-power.dto';
-import { ResponseStatus } from './interfaces/response-status';
-import { MasterService } from './master.service';
+import { WaterPumpConfigDto } from '../dto/water-pump/water-pump-config.dto';
+import { WaterPumpStateDto } from '../dto/water-pump/water-pump-state.dto';
+import { WaterPumpPowerDto } from '../dto/water-pump/water-pump-power.dto';
+import { ResponseStatus } from '../interfaces/response-status';
+import { MasterService } from '../master/master.service';
 import { WaterPumpService } from './water-pump.service';
-import { WATER_PUMP } from '../../util/constants/swagger';
+import { WATER_PUMP } from '../../../util/constants/swagger';
 
 @ApiTags(WATER_PUMP)
 @Controller('api/device-service/water-pump')
@@ -36,6 +37,9 @@ export class SlaveWaterPumpController {
     @Query('slave_id') slaveId: number,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       const result = await this.waterPumpService.getWaterPumpState(
@@ -61,6 +65,9 @@ export class SlaveWaterPumpController {
     @Body() waterConfigDto: WaterPumpConfigDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       const result: ResponseStatus =
@@ -85,6 +92,9 @@ export class SlaveWaterPumpController {
     @Body() waterPumpPowerDto: WaterPumpPowerDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       const result = await this.waterPumpService.turnWaterPump(

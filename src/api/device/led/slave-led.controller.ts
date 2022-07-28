@@ -4,20 +4,21 @@ import {
   Get,
   Headers,
   HttpStatus,
+  NotFoundException,
   Post,
   Query,
   Res,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { ESlaveConfigTopic, ESlaveState } from '../../util/api-topic';
-import { LedConfigDto } from './dto/led/led-config.dto';
-import { LedStateDto } from './dto/led/led-state.dto';
-import { LedPowerDto } from './dto/led/led-power.dto';
-import { ResponseStatus } from './interfaces/response-status';
+import { ESlaveConfigTopic, ESlaveState } from '../../../util/api-topic';
+import { LedConfigDto } from '../dto/led/led-config.dto';
+import { LedStateDto } from '../dto/led/led-state.dto';
+import { LedPowerDto } from '../dto/led/led-power.dto';
+import { ResponseStatus } from '../interfaces/response-status';
 import { LedService } from './led.service';
-import { MasterService } from './master.service';
-import { LED } from '../../util/constants/swagger';
+import { MasterService } from '../master/master.service';
+import { LED } from '../../../util/constants/swagger';
 
 @ApiTags(LED)
 @Controller('api/device-service/led')
@@ -36,6 +37,9 @@ export class SlaveLedController {
     @Query('slave_id') slaveId: number,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     console.log(`Call Led State`);
     try {
@@ -63,6 +67,9 @@ export class SlaveLedController {
     @Body() ledConfigDto: LedConfigDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       console.log(`call led config`);
@@ -92,6 +99,9 @@ export class SlaveLedController {
     @Body() ledPowerDto: LedPowerDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
 
     try {
       const result = await this.ledService.turnLed(ledPowerDto);
