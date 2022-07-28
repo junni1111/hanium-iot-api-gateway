@@ -15,13 +15,14 @@ import { SlaveFanController } from './slave-fan.controller';
 import { FanService } from './fan.service';
 import { DEVICE_MICROSERVICE } from '../../util/constants/microservices';
 import { ClientsDeviceConfigService } from '../../config/clients/clients.device.service';
+import { ClientsConfigModule } from '../../config/clients/clients.module';
 
 @Module({
   imports: [
     ClientsModule.registerAsync([
       {
         name: DEVICE_MICROSERVICE,
-        imports: [ClientsModule],
+        imports: [ClientsConfigModule],
         useClass: ClientsDeviceConfigService,
         inject: [ClientsDeviceConfigService],
       },

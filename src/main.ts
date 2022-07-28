@@ -11,7 +11,7 @@ async function bootstrap() {
   const DEVICE_HOST = configService.get<string>('DEVICE_HOST');
   const DEVICE_PORT = configService.get<number>(
     'DEVICE_PORT_8888_TCP_PORT',
-    8888,
+    configService.get<number>('DEVICE_PORT', 8888),
   );
   const GATEWAY_HOST = configService.get<string>('GATEWAY_HOST');
   const GATEWAY_PORT = configService.get<number>('GATEWAY_PORT', 7777);

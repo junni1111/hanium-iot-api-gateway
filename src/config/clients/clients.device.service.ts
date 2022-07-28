@@ -15,7 +15,10 @@ export class ClientsDeviceConfigService implements ClientsModuleOptionsFactory {
       transport: Transport.TCP,
       options: {
         host: this.configService.get<string>('DEVICE_HOST'),
-        port: this.configService.get<number>('DEVICE_PORT'),
+        port: this.configService.get<number>(
+          'DEVICE_PORT_8888_TCP_PORT',
+          this.configService.get<number>('DEVICE_PORT', 8888),
+        ),
       },
     };
   }
