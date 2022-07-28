@@ -1,6 +1,12 @@
 import { ApiTags } from '@nestjs/swagger';
 import { UTILITY } from '../../util/constants/swagger';
-import { Controller, Get, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Res,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 
 @ApiTags(UTILITY)
@@ -10,11 +16,24 @@ export class UtilityController {
 
   @Get('ping')
   async pingToAuthMicroservice(@Res() res) {
-    console.log(`call auth ping`);
+    try {
+      console.log(`call auth ping`);
 
-    const result = await this.userService.ping();
+      const { data } = await this.userService.ping();
 
-    console.log(`Ping Auth Microservice Result: `, result);
-    return res.send(result);
+      console.log(`Ping Auth Microservice Result: `, data);
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: data,
+      });
+    } catch (e) {
+      throw new HttpException(
+        {
+          statusCode: e.response.data.statusCode,
+          message: e.response.data.message,
+        },
+        e.response.data.statusCode,
+      );
+    }
   }
 }
