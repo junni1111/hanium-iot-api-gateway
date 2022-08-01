@@ -9,9 +9,6 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { DeviceMessageDto } from '../dto/device-message.dto';
-import { lastValueFrom } from 'rxjs';
-import { ESlaveState } from '../../../util/api-topic';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MasterService } from '../master/master.service';
 import { CreateSlaveDto } from '../dto/slave/create-slave.dto';
@@ -44,11 +41,11 @@ export class SlaveController {
     }
 
     try {
-      const result = await this.masterService.createSlave(
+      const { data } = await this.slaveService.createSlave(
         new CreateSlaveDto(masterId, slaveId),
       );
 
-      return res.status(result.status).json(result);
+      return res.status(data.status).json(data);
     } catch (e) {
       console.log(e);
     }
@@ -65,14 +62,12 @@ export class SlaveController {
     if (!jwt) {
       throw new NotFoundException('Jwt Not Found');
     }
-
-    const message = new DeviceMessageDto(
-      ESlaveState.ALL,
-      new SlaveStateDto(masterId, slaveId),
-    );
-    const result = await lastValueFrom(this.masterService.sendMessage(message));
-
-    return res.status(HttpStatus.OK).json(result);
+    try {
+      const { data } = await this.slaveService.getSlaveState(
+        new SlaveStateDto(masterId, slaveId),
+      );
+      return res.status(HttpStatus.OK).json(data);
+    } catch (e) {}
   }
 
   @Get('config')
@@ -88,7 +83,7 @@ export class SlaveController {
     }
 
     try {
-      const slaveConfigs = await this.slaveService.getSlaveConfigs(
+      const { data } = await this.slaveService.getSlaveConfigs(
         masterId,
         slaveId,
       );
@@ -97,7 +92,7 @@ export class SlaveController {
         status: HttpStatus.OK,
         topic: `configs`,
         message: `success get slave configs`,
-        data: slaveConfigs,
+        data,
       };
 
       return res.status(result.status).json(result);

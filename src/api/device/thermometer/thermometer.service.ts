@@ -1,55 +1,59 @@
 import { Injectable } from '@nestjs/common';
-import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
-import { ESlaveConfigTopic } from '../../../util/api-topic';
 import { MasterService } from '../master/master.service';
 import { ThermometerConfigDto } from '../dto/thermometer/thermometer-config.dto';
-import { ResponseStatus } from '../interfaces/response-status';
 import { TemperatureBetweenDto } from '../dto/thermometer/temperature-between.dto';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class ThermometerService {
-  constructor(private readonly deviceMicroservice: MasterService) {}
+  constructor(
+    private readonly deviceMicroservice: MasterService,
+    private readonly httpService: HttpService,
+  ) {}
 
-  getTemperatures(dto: TemperatureBetweenDto): Promise<ResponseStatus> {
+  async getTemperatures(temperatureBetweenDto: TemperatureBetweenDto) {
     return lastValueFrom(
-      this.deviceMicroservice.sendMessage(
-        new DeviceMessageDto('temperature/between', dto),
+      this.httpService.post(
+        this.deviceMicroservice.requestUrl('temperature/between'),
+        temperatureBetweenDto,
       ),
     );
   }
 
-  async getCurrentTemperature(
-    masterId: number,
-    slaveId: number,
-  ): Promise<ResponseStatus> {
+  async getTemperatureOneWeek(temperatureBetweenDto: TemperatureBetweenDto) {
     return lastValueFrom(
-      this.deviceMicroservice.sendMessage(
-        new DeviceMessageDto(
-          /* Todo: Change topic */
-          'temperature/now',
-          JSON.stringify({ master_id: masterId, slave_id: slaveId }),
-        ),
+      this.httpService.post(
+        this.deviceMicroservice.requestUrl('temperature/week'),
+        temperatureBetweenDto,
       ),
     );
   }
 
-  async createTestData(dto: TemperatureBetweenDto): Promise<ResponseStatus> {
+  async getCurrentTemperature(masterId: number, slaveId: number) {
     return lastValueFrom(
-      this.deviceMicroservice.sendMessage(
-        new DeviceMessageDto('test/temperature', dto),
+      this.httpService.get(
+        this.deviceMicroservice.requestUrl('temperature/now'),
+        { params: { masterId, slaveId } },
       ),
     );
   }
 
-  async setThermometerConfig(
-    ThermometerConfigDto: ThermometerConfigDto,
-  ): Promise<ResponseStatus> {
-    const messageDto = new DeviceMessageDto(
-      ESlaveConfigTopic.THERMOMETER,
-      ThermometerConfigDto,
+  async createTestData(temperatureBetweenDto: TemperatureBetweenDto) {
+    return lastValueFrom(
+      this.httpService.post(
+        this.deviceMicroservice.requestUrl('temperature/test'),
+        temperatureBetweenDto,
+      ),
     );
+  }
 
-    return lastValueFrom(this.deviceMicroservice.sendMessage(messageDto));
+  async setThermometerConfig(thermometerConfigDto: ThermometerConfigDto) {
+    return lastValueFrom(
+      this.httpService.post(
+        this.deviceMicroservice.requestUrl('temperature/config'),
+        thermometerConfigDto,
+      ),
+    );
   }
 }
