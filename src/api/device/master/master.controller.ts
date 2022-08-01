@@ -62,7 +62,7 @@ export class MasterController {
   //   }
   // }
 
-  /* TODO: Make Polling DTO*/
+  /* TODO: Make Polling DTO */
   @Get('state')
   async getMasterState(
     @Headers() header: any,

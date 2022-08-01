@@ -1,8 +1,8 @@
-import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
 import { UserRoles } from '../enums/user-role';
 
-export class CreateUserDto {
+export class UserDto {
   @ApiProperty()
   @IsEmail()
   email: string;
@@ -13,13 +13,17 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsString()
-  password: string;
-
-  @ApiProperty()
-  @IsString()
   phoneNumber: string;
 
   @ApiProperty()
   @IsEnum(UserRoles)
   role: UserRoles;
+
+  @ApiProperty()
+  @IsArray()
+  masterIds: number[];
+
+  @ApiProperty()
+  @IsArray()
+  slaveIds: number[];
 }

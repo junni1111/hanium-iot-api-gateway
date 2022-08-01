@@ -14,8 +14,8 @@ import { SlaveWaterPumpController } from './water-pump/slave-water-pump.controll
 import { SlaveFanController } from './fan/slave-fan.controller';
 import { FanService } from './fan/fan.service';
 import { DEVICE_MICROSERVICE } from '../../util/constants/microservices';
-import { ClientsDeviceConfigService } from '../../config/clients/clients.device.service';
 import { ClientsConfigModule } from '../../config/clients/clients.module';
+import { ClientsDeviceConfigService } from '../../config/clients/clients.device.service';
 
 @Module({
   imports: [
