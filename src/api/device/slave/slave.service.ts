@@ -1,24 +1,40 @@
 import { MasterService } from '../master/master.service';
 import { Injectable } from '@nestjs/common';
-import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
-import { ESlaveConfigTopic } from '../../../util/api-topic';
-import { SlaveConfigDto } from '../dto/slave/slave-config.dto';
+import { CreateSlaveDto } from '../dto/slave/create-slave.dto';
+import { HttpService } from '@nestjs/axios';
+import { SlaveStateDto } from '../dto/slave/slave-state.dto';
 
 @Injectable()
 export class SlaveService {
-  constructor(private readonly deviceMicroservice: MasterService) {}
+  constructor(
+    private readonly deviceMicroservice: MasterService,
+    private readonly httpService: HttpService,
+  ) {}
+
+  async createSlave(createSlaveDto: CreateSlaveDto) {
+    return lastValueFrom(
+      this.httpService.post(
+        this.deviceMicroservice.requestUrl('slave'),
+        createSlaveDto,
+      ),
+    );
+  }
 
   async getSlaveConfigs(masterId: number, slaveId: number) {
-    const slaveConfigDto = new SlaveConfigDto();
-    slaveConfigDto.masterId = masterId;
-    slaveConfigDto.slaveId = slaveId;
-
-    const messageDto = new DeviceMessageDto(
-      ESlaveConfigTopic.ALL,
-      slaveConfigDto,
+    return lastValueFrom(
+      this.httpService.get(this.deviceMicroservice.requestUrl('slave/config'), {
+        params: { masterId, slaveId },
+      }),
     );
+  }
 
-    return lastValueFrom(this.deviceMicroservice.sendMessage(messageDto));
+  async getSlaveState(slaveStateDto: SlaveStateDto) {
+    return lastValueFrom(
+      this.httpService.post(
+        this.deviceMicroservice.requestUrl('slave/state'),
+        slaveStateDto,
+      ),
+    );
   }
 }

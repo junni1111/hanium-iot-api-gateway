@@ -43,11 +43,11 @@ export class SlaveWaterPumpController {
     }
 
     try {
-      const result = await this.waterPumpService.getWaterPumpState(
+      const { data } = await this.waterPumpService.getWaterPumpState(
         new WaterPumpStateDto(masterId, slaveId),
       );
 
-      return res.status(result.status).json(result);
+      return res.status(data.status).json(data);
     } catch (e) {
       const response: ResponseStatus = {
         status: HttpStatus.BAD_REQUEST,
@@ -71,10 +71,11 @@ export class SlaveWaterPumpController {
     }
 
     try {
-      const result: ResponseStatus =
-        await this.waterPumpService.setWaterPumpConfig(waterConfigDto);
+      const { data } = await this.waterPumpService.setWaterPumpConfig(
+        waterConfigDto,
+      );
 
-      return res.status(result.status).json(result);
+      return res.status(data.status).json(data);
     } catch (e) {
       const response: ResponseStatus = {
         status: HttpStatus.BAD_REQUEST,
@@ -98,10 +99,10 @@ export class SlaveWaterPumpController {
     }
 
     try {
-      const result = await this.waterPumpService.turnWaterPump(
+      const { data } = await this.waterPumpService.turnWaterPump(
         waterPumpPowerDto,
       );
-      return res.status(result.status).json(result);
+      return res.status(data.status).json(data);
     } catch (e) {
       console.log(e);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });

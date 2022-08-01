@@ -44,11 +44,11 @@ export class SlaveLedController {
 
     console.log(`Call Led State`);
     try {
-      const result = await this.ledService.getLedState(
+      const { data } = await this.ledService.getLedState(
         new LedStateDto(masterId, slaveId),
       );
 
-      return res.status(result.status).json(result);
+      return res.status(data.status).json(data);
     } catch (e) {
       const response: ResponseStatus = {
         status: HttpStatus.BAD_REQUEST,
@@ -75,11 +75,9 @@ export class SlaveLedController {
     try {
       console.log(`call led config`);
       console.log(ledConfigDto);
-      const result: ResponseStatus = await this.ledService.setLedConfig(
-        ledConfigDto,
-      );
+      const { data } = await this.ledService.setLedConfig(ledConfigDto);
 
-      return res.status(result.status).json(result);
+      return res.status(data.status).json(data);
     } catch (e) {
       console.log(`catch led config error : `, e);
       const response: ResponseStatus = {
@@ -105,8 +103,8 @@ export class SlaveLedController {
     }
 
     try {
-      const result = await this.ledService.turnLed(ledPowerDto);
-      return res.status(result.status).json(result);
+      const { data } = await this.ledService.turnLed(ledPowerDto);
+      return res.status(data.status).json(data);
     } catch (e) {
       console.log(e);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });
