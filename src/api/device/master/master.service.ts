@@ -1,18 +1,12 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { DeviceMessageDto } from '../dto/device-message.dto';
-import { ClientProxy } from '@nestjs/microservices';
-import { catchError, lastValueFrom, map, Observable } from 'rxjs';
-import { ResponseStatus } from '../interfaces/response-status';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
 import { CreateMasterDto } from '../dto/master/create-master.dto';
-import { DEVICE_MICROSERVICE } from '../../../util/constants/microservices';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class MasterService {
   constructor(
-    @Inject(DEVICE_MICROSERVICE)
-    private readonly deviceMicroservice: ClientProxy,
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {}
@@ -37,19 +31,6 @@ export class MasterService {
         params: {
           masterId,
         },
-      }),
-    );
-  }
-
-  sendMessage(dto: DeviceMessageDto): Observable<ResponseStatus> {
-    console.log(dto);
-    return this.deviceMicroservice.send(dto.messagePattern, dto.payload).pipe(
-      map((data: ResponseStatus) => {
-        console.log(data);
-        return data;
-      }),
-      catchError((e) => {
-        throw new NotFoundException(e);
       }),
     );
   }
