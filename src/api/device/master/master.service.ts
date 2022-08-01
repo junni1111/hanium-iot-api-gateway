@@ -1,36 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { lastValueFrom } from 'rxjs';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { DeviceMessageDto } from '../dto/device-message.dto';
+import { ClientProxy } from '@nestjs/microservices';
+import { catchError, lastValueFrom, map, Observable } from 'rxjs';
+import { ResponseStatus } from '../interfaces/response-status';
 import { CreateMasterDto } from '../dto/master/create-master.dto';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
+import { CreateSlaveDto } from '../dto/slave/create-slave.dto';
+import { DEVICE_MICROSERVICE } from '../../../util/constants/microservices';
 
 @Injectable()
 export class MasterService {
   constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
+    @Inject(DEVICE_MICROSERVICE)
+    private readonly deviceMicroservice: ClientProxy,
   ) {}
 
-  requestUrl(url: string) {
-    const USER_HOST = this.configService.get<string>('DEVICE_HOST');
-    const USER_PORT = this.configService.get<number>(
-      'DEVICE_PORT_8000_TCP_PORT',
-    );
-    return `http://${USER_HOST}:${USER_PORT}/${url}`;
+  async createMaster(
+    createMasterDto: CreateMasterDto,
+  ): Promise<ResponseStatus> {
+    const payload = new DeviceMessageDto('create/master', createMasterDto);
+    const result = lastValueFrom(this.sendMessage(payload));
+
+    return result;
   }
 
-  async createMaster(createMasterDto: CreateMasterDto) {
-    return lastValueFrom(
-      this.httpService.post(this.requestUrl('master'), createMasterDto),
-    );
+  async createSlave(createSlaveDto: CreateSlaveDto): Promise<ResponseStatus> {
+    const payload = new DeviceMessageDto('create/slave', createSlaveDto);
+    return lastValueFrom(this.sendMessage(payload));
   }
 
-  async getMasterState(masterId: number) {
-    return lastValueFrom(
-      this.httpService.post(this.requestUrl('master/polling'), {
-        params: {
-          masterId,
-        },
+  sendMessage(dto: DeviceMessageDto): Observable<ResponseStatus> {
+    console.log(dto);
+    return this.deviceMicroservice.send(dto.messagePattern, dto.payload).pipe(
+      map((data: ResponseStatus) => {
+        console.log(data);
+        return data;
+      }),
+      catchError((e) => {
+        throw new NotFoundException(e);
       }),
     );
   }

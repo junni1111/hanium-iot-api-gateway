@@ -36,8 +36,8 @@ export class SlaveFanController {
 
     try {
       console.log(`@@@@@@ Turn Fan Power`);
-      const { data } = await this.fanService.turnFan(fanPowerDto);
-      return res.status(data.status).json(data);
+      const result = await this.fanService.turnFan(fanPowerDto);
+      return res.status(result.status).json(result);
     } catch (e) {
       console.log(e);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });

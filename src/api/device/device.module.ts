@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule } from '@nestjs/microservices';
 import { ThermometerService } from './thermometer/thermometer.service';
 import { WaterPumpService } from './water-pump/water-pump.service';
 import { LedService } from './led/led.service';
@@ -12,10 +13,21 @@ import { SlaveTemperatureController } from './thermometer/slave-thermometer.cont
 import { SlaveWaterPumpController } from './water-pump/slave-water-pump.controller';
 import { SlaveFanController } from './fan/slave-fan.controller';
 import { FanService } from './fan/fan.service';
-import { HttpModule } from '@nestjs/axios';
+import { DEVICE_MICROSERVICE } from '../../util/constants/microservices';
+import { ClientsConfigModule } from '../../config/clients/clients.module';
+import { ClientsDeviceConfigService } from '../../config/clients/clients.device.service';
 
 @Module({
-  imports: [HttpModule.register({ timeout: 5000, maxRedirects: 5 })],
+  imports: [
+    ClientsModule.registerAsync([
+      {
+        name: DEVICE_MICROSERVICE,
+        imports: [ClientsConfigModule],
+        useClass: ClientsDeviceConfigService,
+        inject: [ClientsDeviceConfigService],
+      },
+    ]),
+  ],
   controllers: [
     MasterController,
     SlaveController,

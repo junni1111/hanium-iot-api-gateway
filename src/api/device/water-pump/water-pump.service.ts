@@ -1,46 +1,53 @@
 import { Injectable } from '@nestjs/common';
+import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
+import {
+  ESlaveConfigTopic,
+  ESlaveState,
+  ESlaveTurnPowerTopic,
+} from '../../../util/api-topic';
 import { MasterService } from '../master/master.service';
 import { WaterPumpConfigDto } from '../dto/water-pump/water-pump-config.dto';
+import { ResponseStatus } from '../interfaces/response-status';
 import { WaterPumpPowerDto } from '../dto/water-pump/water-pump-power.dto';
 import { WaterPumpStateDto } from '../dto/water-pump/water-pump-state.dto';
-import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class WaterPumpService {
-  constructor(
-    private readonly deviceMicroservice: MasterService,
-    private readonly httpService: HttpService,
-  ) {}
+  constructor(private readonly deviceMicroservice: MasterService) {}
 
-  async setWaterPumpConfig(waterPumpConfigDto: WaterPumpConfigDto) {
-    return lastValueFrom(
-      this.httpService.post(
-        this.deviceMicroservice.requestUrl('water-pump/config'),
-        waterPumpConfigDto,
-      ),
+  async setWaterPumpConfig(
+    waterPumpConfigDto: WaterPumpConfigDto,
+  ): Promise<ResponseStatus> {
+    const messageDto = new DeviceMessageDto(
+      ESlaveConfigTopic.WATER_PUMP,
+      waterPumpConfigDto,
     );
+
+    return lastValueFrom(this.deviceMicroservice.sendMessage(messageDto));
   }
 
   async turnWaterPump(waterPumpTurnDto: WaterPumpPowerDto) {
     console.log(`call turn water pump`, waterPumpTurnDto);
+    const turnWaterPumpMessageDto = new DeviceMessageDto(
+      ESlaveTurnPowerTopic.WATER_PUMP,
+      waterPumpTurnDto,
+    );
 
     return lastValueFrom(
-      this.httpService.post(
-        this.deviceMicroservice.requestUrl('water-pump/power'),
-        waterPumpTurnDto,
-      ),
+      this.deviceMicroservice.sendMessage(turnWaterPumpMessageDto),
     );
   }
 
   async getWaterPumpState(waterPumpStateDto: WaterPumpStateDto) {
     console.log(`call water pump state service`);
+    const waterPumpStateMessage = new DeviceMessageDto(
+      ESlaveState.WATER_PUMP,
+      waterPumpStateDto,
+    );
 
     return lastValueFrom(
-      this.httpService.post(
-        this.deviceMicroservice.requestUrl('water-pump/state'),
-        waterPumpStateDto,
-      ),
+      this.deviceMicroservice.sendMessage(waterPumpStateMessage),
     );
   }
 }
