@@ -28,6 +28,7 @@ export class UserController {
     @Res() res: Response,
     @Body() createUserDto: CreateUserDto,
   ) {
+    console.log(`Call signup`);
     try {
       const { data } = await this.userService.signUp(createUserDto);
       console.log('signup : ', data);
