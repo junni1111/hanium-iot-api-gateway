@@ -4,7 +4,7 @@ import { Response } from 'express';
 import { MasterService } from './master.service';
 import { FanService } from './fan.service';
 import { SlavePowerDto } from './dto/slave/slave-power.dto';
-import {FAN} from "../../util/constants/swagger";
+import { FAN } from '../../util/constants/swagger';
 
 @ApiTags(FAN)
 @Controller('api/device-service/fan')
@@ -17,7 +17,6 @@ export class SlaveFanController {
   @Post('config/power')
   async setPowerFan(@Res() res: Response, @Body() fanPowerDto: SlavePowerDto) {
     try {
-      console.log(`@@@@@@ Turn Fan Power`);
       const result = await this.fanService.turnFan(fanPowerDto);
       return res.status(result.status).json(result);
     } catch (e) {
