@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { DeviceMessageDto } from '../dto/device-message.dto';
@@ -17,6 +18,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { POLLING } from '../../../util/api-topic';
 import { MASTER } from '../../../util/constants/swagger';
+import { AuthGuard } from '../guards/auth.guard';
+import {RolesGuard} from "../guards/roles.guard";
 
 @ApiTags(MASTER)
 @ApiBearerAuth('access-token')
@@ -25,15 +28,17 @@ export class MasterController {
   constructor(private readonly masterService: MasterService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
+  @UseGuards(RolesGuard)
   async createMaster(
-    @Headers() header: any,
+    // @Headers() header: any,
     @Res() res: Response,
     @Body() createMasterDto: CreateMasterDto,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
+    // const jwt = header['authorization']?.split(' ')[1];
+    // if (!jwt) {
+    //   throw new NotFoundException('Jwt Not Found');
+    // }
     // Todo : jwt 유효성 확인 및 사용자 정보 확인
 
     try {
