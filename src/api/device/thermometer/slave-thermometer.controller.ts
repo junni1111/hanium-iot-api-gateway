@@ -12,9 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { lastValueFrom } from 'rxjs';
-import { ESlaveConfigTopic, TEMPERATURE_WEEK } from 'src/util/api-topic';
-import { DeviceMessageDto } from '../dto/device-message.dto';
+import { ESlaveConfigTopic } from 'src/util/api-topic';
 import { ThermometerConfigDto } from '../dto/thermometer/thermometer-config.dto';
 import { ResponseStatus } from '../interfaces/response-status';
 import { MasterService } from '../master/master.service';
@@ -35,7 +33,7 @@ export class SlaveTemperatureController {
   async getTemperatures(
     @Headers() header: any,
     @Res() res: Response,
-    @Body() dto: TemperatureBetweenDto,
+    @Body() temperatureBetweenDto: TemperatureBetweenDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
     if (!jwt) {
@@ -43,11 +41,13 @@ export class SlaveTemperatureController {
     }
 
     try {
-      const result = await this.thermometerService.getTemperatures(dto);
-      Logger.debug(`날짜 범위 온도: `, result);
-      Logger.log(result);
+      const { data } = await this.thermometerService.getTemperatures(
+        temperatureBetweenDto,
+      );
+      Logger.debug(`날짜 범위 온도: `, data);
+      Logger.log(data);
 
-      return res.status(result.status).json(result);
+      return res.status(data.status).json(data);
     } catch (e) {
       const response: ResponseStatus = {
         status: HttpStatus.BAD_REQUEST,
@@ -72,12 +72,12 @@ export class SlaveTemperatureController {
     }
 
     try {
-      const response = await this.thermometerService.getCurrentTemperature(
+      const { data } = await this.thermometerService.getCurrentTemperature(
         masterId,
         slaveId,
       );
 
-      return res.status(response.status).json(response);
+      return res.status(data.status).json(data);
     } catch (e) {
       const response: ResponseStatus = {
         status: HttpStatus.BAD_REQUEST,
@@ -100,16 +100,11 @@ export class SlaveTemperatureController {
       throw new NotFoundException('Jwt Not Found');
     }
 
-    const messageDto = new DeviceMessageDto(
-      TEMPERATURE_WEEK,
+    const { data } = await this.thermometerService.getTemperatureOneWeek(
       temperatureBetweenDto,
     );
-
-    const result = await lastValueFrom(
-      this.masterService.sendMessage(messageDto),
-    );
-    console.log(result);
-    return res.status(result.status).json(result);
+    console.log(data);
+    return res.status(data.status).json(data);
   }
 
   @Post('config')
@@ -124,12 +119,11 @@ export class SlaveTemperatureController {
     }
 
     try {
-      const result: ResponseStatus =
-        await this.thermometerService.setThermometerConfig(
-          thermometerConfigDto,
-        );
+      const { data } = await this.thermometerService.setThermometerConfig(
+        thermometerConfigDto,
+      );
 
-      return res.status(result.status).json(result);
+      return res.status(data.status).json(data);
     } catch (e) {
       const response: ResponseStatus = {
         status: HttpStatus.BAD_REQUEST,
@@ -152,13 +146,13 @@ export class SlaveTemperatureController {
     }
 
     try {
-      const result = await this.thermometerService.createTestData(
+      const { data } = await this.thermometerService.createTestData(
         temperatureBetweenDto,
       );
       // console.log(result);
       // console.log(result.data.length);
 
-      return result;
+      return data;
     } catch (e) {
       console.log(e);
     }
