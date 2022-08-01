@@ -28,7 +28,8 @@ export class UserService {
     );
   }
 
-  jwt(jwt: string) {
+  // Todo: Return User
+  async jwt(jwt: string): Promise<any> {
     return lastValueFrom(
       this.httpService.get(`${this.requestUrl()}/jwt`, { params: { jwt } }),
     );

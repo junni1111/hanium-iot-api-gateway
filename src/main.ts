@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { setupSwagger } from './util/swagger';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from './api/user/guards/auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+
 
   app.use(cookieParser());
 

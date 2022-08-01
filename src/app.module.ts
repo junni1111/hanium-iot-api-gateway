@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ApiModule } from './api/api.module';
 import { HealthController } from './health.controller';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './api/user/guards/auth.guard';
 
 @Module({
   imports: [

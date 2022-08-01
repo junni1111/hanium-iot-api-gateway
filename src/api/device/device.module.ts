@@ -13,6 +13,7 @@ import { SlaveWaterPumpController } from './water-pump/slave-water-pump.controll
 import { SlaveFanController } from './fan/slave-fan.controller';
 import { FanService } from './fan/fan.service';
 import { HttpModule } from '@nestjs/axios';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [HttpModule.register({ timeout: 5000, maxRedirects: 5 })],
@@ -32,6 +33,7 @@ import { HttpModule } from '@nestjs/axios';
     WaterPumpService,
     LedService,
     FanService,
+    UserService,
   ],
 })
 export class DeviceModule {}
