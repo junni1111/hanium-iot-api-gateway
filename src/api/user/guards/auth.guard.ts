@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../user.service';
 
 export class AuthGuard implements CanActivate {
   constructor(private readonly userService: UserService) {}
