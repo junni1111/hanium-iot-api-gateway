@@ -1,25 +1,9 @@
-import { IsEmail, IsEnum, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { UserRoles } from '../enums/user-role';
+import { PickType } from '@nestjs/swagger';
+import { User } from '../entities/user.entity';
 
-export class CreateUserDto {
-  @ApiProperty()
-  @IsEmail()
-  email: string;
-
-  @ApiProperty()
-  @IsString()
-  username: string;
-
-  @ApiProperty()
-  @IsString()
-  password: string;
-
-  @ApiProperty()
-  @IsString()
-  phoneNumber: string;
-
-  @ApiProperty()
-  @IsEnum(UserRoles)
-  role: UserRoles;
-}
+export class CreateUserDto extends PickType(User, [
+  'email',
+  'username',
+  'password',
+  'phoneNumber',
+] as const) {}
