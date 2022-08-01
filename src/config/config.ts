@@ -29,4 +29,3 @@ export const USER_AUTH_PORT =
   Number(process.env.USER_AUTH_PORT) ||
   9999;
 /** Todo: AWS ECS 컨테이너 맵핑 필요 */
-export const requestUrl = `http://${process.env.USER_AUTH_HOST}:${process.env.USER_AUTH_REST_PORT}`;

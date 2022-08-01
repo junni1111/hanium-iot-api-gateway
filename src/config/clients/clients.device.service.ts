@@ -11,11 +11,15 @@ export class ClientsDeviceConfigService implements ClientsModuleOptionsFactory {
   constructor(private configService: ConfigService) {}
 
   createClientOptions(): ClientProvider {
+    const DEVICE_HOST = this.configService.get<string>('DEVICE_HOST');
+    const DEVICE_PORT =
+      this.configService.get<number>('DEVICE_PORT_8888_TCP_PORT') ||
+      this.configService.get<number>('DEVICE_PORT', 8888);
     return {
       transport: Transport.TCP,
       options: {
-        host: this.configService.get<string>('DEVICE_HOST'),
-        port: this.configService.get<number>('DEVICE_PORT'),
+        host: DEVICE_HOST,
+        port: DEVICE_PORT,
       },
     };
   }

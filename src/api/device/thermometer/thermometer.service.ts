@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { DeviceMessageDto } from './dto/device-message.dto';
+import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
-import { ESlaveConfigTopic } from '../../util/api-topic';
-import { MasterService } from './master.service';
-import { ThermometerConfigDto } from './dto/thermometer/thermometer-config.dto';
-import { ResponseStatus } from './interfaces/response-status';
-import { SlaveStateDto } from './dto/slave/slave-state.dto';
-import { TemperatureBetweenDto } from './dto/thermometer/temperature-between.dto';
+import { ESlaveConfigTopic } from '../../../util/api-topic';
+import { MasterService } from '../master/master.service';
+import { ThermometerConfigDto } from '../dto/thermometer/thermometer-config.dto';
+import { ResponseStatus } from '../interfaces/response-status';
+import { TemperatureBetweenDto } from '../dto/thermometer/temperature-between.dto';
 
 @Injectable()
 export class ThermometerService {

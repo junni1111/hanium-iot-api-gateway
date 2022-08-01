@@ -29,7 +29,6 @@ export class UserController {
     @Body() createUserDto: CreateUserDto,
   ) {
     try {
-      /** Todo: Refactor result */
       const { data } = await this.userService.signUp(createUserDto);
       console.log('signup : ', data);
 
@@ -97,6 +96,11 @@ export class UserController {
         accessToken: data.accessToken,
       });
     } catch (e) {
+      res.clearCookie('auth-cookie', {
+        httpOnly: true,
+        domain: process.env.COOKIE_DOMAIN,
+      });
+
       throw new HttpException(
         {
           statusCode: e.response.data.statusCode,

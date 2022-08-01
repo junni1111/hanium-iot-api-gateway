@@ -1,9 +1,9 @@
-import { MasterService } from './master.service';
+import { MasterService } from '../master/master.service';
 import { Injectable } from '@nestjs/common';
-import { DeviceMessageDto } from './dto/device-message.dto';
+import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
-import { ESlaveConfigTopic } from '../../util/api-topic';
-import { SlaveConfigDto } from './dto/slave/slave-config.dto';
+import { ESlaveConfigTopic } from '../../../util/api-topic';
+import { SlaveConfigDto } from '../dto/slave/slave-config.dto';
 
 @Injectable()
 export class SlaveService {

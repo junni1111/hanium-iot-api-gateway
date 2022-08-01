@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { DeviceMessageDto } from './dto/device-message.dto';
+import { DeviceMessageDto } from '../dto/device-message.dto';
 import { lastValueFrom } from 'rxjs';
 import {
   ESlaveConfigTopic,
   ESlaveState,
   ESlaveTurnPowerTopic,
-} from '../../util/api-topic';
-import { MasterService } from './master.service';
-import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
-import { ResponseStatus } from './interfaces/response-status';
-import { WaterPumpPowerDto } from './dto/water-pump/water-pump-power.dto';
-import { WaterPumpStateDto } from './dto/water-pump/water-pump-state.dto';
+} from '../../../util/api-topic';
+import { MasterService } from '../master/master.service';
+import { WaterPumpConfigDto } from '../dto/water-pump/water-pump-config.dto';
+import { ResponseStatus } from '../interfaces/response-status';
+import { WaterPumpPowerDto } from '../dto/water-pump/water-pump-power.dto';
+import { WaterPumpStateDto } from '../dto/water-pump/water-pump-state.dto';
 
 @Injectable()
 export class WaterPumpService {

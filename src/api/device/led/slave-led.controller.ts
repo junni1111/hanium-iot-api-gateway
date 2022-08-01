@@ -2,24 +2,26 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpStatus,
-  Param,
+  NotFoundException,
   Post,
   Query,
   Res,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { ESlaveConfigTopic, ESlaveState } from '../../util/api-topic';
-import { LedConfigDto } from './dto/led/led-config.dto';
-import { LedStateDto } from './dto/led/led-state.dto';
-import { LedPowerDto } from './dto/led/led-power.dto';
-import { ResponseStatus } from './interfaces/response-status';
+import { ESlaveConfigTopic, ESlaveState } from '../../../util/api-topic';
+import { LedConfigDto } from '../dto/led/led-config.dto';
+import { LedStateDto } from '../dto/led/led-state.dto';
+import { LedPowerDto } from '../dto/led/led-power.dto';
+import { ResponseStatus } from '../interfaces/response-status';
 import { LedService } from './led.service';
-import { MasterService } from './master.service';
-import { LED } from '../../util/constants/swagger';
+import { MasterService } from '../master/master.service';
+import { LED } from '../../../util/constants/swagger';
 
 @ApiTags(LED)
+@ApiBearerAuth('access-token')
 @Controller('api/device-service/led')
 export class SlaveLedController {
   constructor(
@@ -30,10 +32,16 @@ export class SlaveLedController {
   @ApiOkResponse()
   @Get('state')
   async getLedState(
+    @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
+
     console.log(`Call Led State`);
     try {
       const result = await this.ledService.getLedState(
@@ -54,7 +62,16 @@ export class SlaveLedController {
 
   @ApiOkResponse()
   @Post('config')
-  async setLedConfig(@Res() res: Response, @Body() ledConfigDto: LedConfigDto) {
+  async setLedConfig(
+    @Headers() header: any,
+    @Res() res: Response,
+    @Body() ledConfigDto: LedConfigDto,
+  ) {
+    const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
+
     try {
       console.log(`call led config`);
       console.log(ledConfigDto);
@@ -77,7 +94,16 @@ export class SlaveLedController {
 
   @ApiOkResponse()
   @Post('config/power')
-  async setPowerConfig(@Res() res: Response, @Body() ledPowerDto: LedPowerDto) {
+  async setPowerConfig(
+    @Headers() header: any,
+    @Res() res: Response,
+    @Body() ledPowerDto: LedPowerDto,
+  ) {
+    const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
+
     try {
       const result = await this.ledService.turnLed(ledPowerDto);
       return res.status(result.status).json(result);

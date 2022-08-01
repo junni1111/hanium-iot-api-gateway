@@ -2,24 +2,26 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpStatus,
-  Param,
+  NotFoundException,
   Post,
   Query,
   Res,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
-import { WaterPumpConfigDto } from './dto/water-pump/water-pump-config.dto';
-import { WaterPumpStateDto } from './dto/water-pump/water-pump-state.dto';
-import { WaterPumpPowerDto } from './dto/water-pump/water-pump-power.dto';
-import { ResponseStatus } from './interfaces/response-status';
-import { MasterService } from './master.service';
+import { WaterPumpConfigDto } from '../dto/water-pump/water-pump-config.dto';
+import { WaterPumpStateDto } from '../dto/water-pump/water-pump-state.dto';
+import { WaterPumpPowerDto } from '../dto/water-pump/water-pump-power.dto';
+import { ResponseStatus } from '../interfaces/response-status';
+import { MasterService } from '../master/master.service';
 import { WaterPumpService } from './water-pump.service';
-import { WATER_PUMP } from '../../util/constants/swagger';
+import { WATER_PUMP } from '../../../util/constants/swagger';
 
 @ApiTags(WATER_PUMP)
+@ApiBearerAuth('access-token')
 @Controller('api/device-service/water-pump')
 export class SlaveWaterPumpController {
   constructor(
@@ -30,10 +32,16 @@ export class SlaveWaterPumpController {
   @ApiOkResponse()
   @Get('state')
   async getWaterPumpState(
+    @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
+
     try {
       const result = await this.waterPumpService.getWaterPumpState(
         new WaterPumpStateDto(masterId, slaveId),
@@ -53,9 +61,15 @@ export class SlaveWaterPumpController {
 
   @Post('config')
   async setWaterPumpConfig(
+    @Headers() header: any,
     @Res() res: Response,
     @Body() waterConfigDto: WaterPumpConfigDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
+
     try {
       const result: ResponseStatus =
         await this.waterPumpService.setWaterPumpConfig(waterConfigDto);
@@ -74,9 +88,15 @@ export class SlaveWaterPumpController {
 
   @Post('config/power')
   async setPowerWaterPump(
+    @Headers() header: any,
     @Res() res: Response,
     @Body() waterPumpPowerDto: WaterPumpPowerDto,
   ) {
+    const jwt = header['authorization']?.split(' ')[1];
+    if (!jwt) {
+      throw new NotFoundException('Jwt Not Found');
+    }
+
     try {
       const result = await this.waterPumpService.turnWaterPump(
         waterPumpPowerDto,
