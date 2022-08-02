@@ -8,16 +8,12 @@ import {
   Post,
   Query,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateMasterDto } from '../dto/master/create-master.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { MASTER } from '../../../util/constants/swagger';
-import { AuthGuard } from '../../user/guards/auth.guard';
-import { RolesGuard } from '../../user/guards/roles.guard';
-import { UserRoles } from '../../user/enums/user-role';
 
 @ApiTags(MASTER)
 @ApiBearerAuth('access-token')
@@ -25,8 +21,8 @@ import { UserRoles } from '../../user/enums/user-role';
 export class MasterController {
   constructor(private readonly masterService: MasterService) {}
 
-  @UseGuards(RolesGuard([UserRoles.ADMIN]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  // @UseGuards(AuthGuard)
   @Post()
   async createMaster(
     @Headers() header: any,
