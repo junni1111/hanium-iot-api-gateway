@@ -160,9 +160,9 @@ export class SlaveTemperatureController {
   }
 
   @Delete('db')
-  async clearThermometerDB(@Res() res: Response) {
+  async clearThermometerDB(@Res() res: Response, @Query('type') type: string) {
     try {
-      const { data } = await this.thermometerService.clearThermometerDB();
+      const { data } = await this.thermometerService.clearThermometerDB(type);
 
       return res.send({
         statusCode: HttpStatus.OK,
