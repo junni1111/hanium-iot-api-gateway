@@ -65,4 +65,8 @@ export class UserService {
       }),
     );
   }
+
+  dbClear() {
+    return lastValueFrom(this.httpService.get(`${this.requestUrl()}/db/clear`));
+  }
 }

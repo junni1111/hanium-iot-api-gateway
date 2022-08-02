@@ -166,4 +166,18 @@ export class UserController {
       throw e;
     }
   }
+
+  @Get('db/clear')
+  async dbClear(@Res() res: Response) {
+    try {
+      const { data } = await this.userService.dbClear();
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'db clear completed',
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
 }
