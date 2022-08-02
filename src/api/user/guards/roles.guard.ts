@@ -19,11 +19,14 @@ export const RolesGuard = (roles: UserRoles[]): Type<CanActivate> => {
     ): boolean | Promise<boolean> | Observable<boolean> {
       console.log(`Call Roles Guard`);
       const request = context.switchToHttp().getRequest();
-      const { role } = request?.user;
+      const { role } = request.body?.user;
+      console.log(`Role: `, role);
 
       return roles.includes(role);
     }
   }
+
+  /** Todo: Handle Unauthorized Role */
 
   return mixin(RoleGuardMixin);
 };

@@ -11,18 +11,13 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     console.log(`Call JWT Guard`);
     const jwt = request?.headers['authorization']?.split(' ')[1];
-    console.log(`JWT: `, jwt);
 
-    /* Todo: Fix User -> data */
-    const validUser = await this.userService.jwt(jwt);
-
-    if (!validUser) {
+    const user = await this.userService.jwt(jwt);
+    if (!user) {
       return false;
     }
 
-    request.user = { role: UserRoles.ADMIN };
-    // reqeust.user = { role: UserRoles.ADMIN };
+    request.body.user = user;
     return true;
-    // console.log(`In Guard JWT: `, jwt);
   }
 }

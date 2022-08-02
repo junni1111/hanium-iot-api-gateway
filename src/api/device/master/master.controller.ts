@@ -8,12 +8,16 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { CreateMasterDto } from '../dto/master/create-master.dto';
+import { CreateMasterDto } from './dto/create-master.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { MASTER } from '../../../util/constants/swagger';
+import { AuthGuard } from 'src/api/user/guards/auth.guard';
+import { RolesGuard } from '../../user/guards/roles.guard';
+import { UserRoles } from '../../user/enums/user-role';
 
 @ApiTags(MASTER)
 @ApiBearerAuth('access-token')
@@ -21,24 +25,22 @@ import { MASTER } from '../../../util/constants/swagger';
 export class MasterController {
   constructor(private readonly masterService: MasterService) {}
 
-  // @UseGuards(RolesGuard([UserRoles.ADMIN]))
-  // @UseGuards(AuthGuard)
   @Post()
+  @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  @UseGuards(AuthGuard)
   async createMaster(
-    @Headers() header: any,
     @Res() res: Response,
     @Body() createMasterDto: CreateMasterDto,
   ) {
-    // const jwt = header['authorization']?.split(' ')[1];
-    // if (!jwt) {
-    //   throw new NotFoundException('Jwt Not Found');
-    // }
     // Todo : jwt 유효성 확인 및 사용자 정보 확인
+    const user = createMasterDto?.user;
+    console.log(`DTO User: `, user);
 
     try {
       const { data } = await this.masterService.createMaster(createMasterDto);
 
       return res.status(data.status).json(data);
+      // return res.json(user);
     } catch (e) {
       console.log(e);
     }

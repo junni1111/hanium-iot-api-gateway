@@ -4,6 +4,8 @@ import { SignInDto } from './dto/sign-in.dto';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
+import { AuthUserDto } from './dto/auth-user.dto';
+import { AxiosResponse } from 'axios';
 
 @Injectable()
 export class UserService {
@@ -28,11 +30,12 @@ export class UserService {
     );
   }
 
-  // Todo: Return User
   async jwt(jwt: string): Promise<any> {
-    return lastValueFrom(
+    const { data: user } = await lastValueFrom(
       this.httpService.get(`${this.requestUrl()}/jwt`, { params: { jwt } }),
     );
+
+    return user;
   }
 
   refresh(tokens: any) {

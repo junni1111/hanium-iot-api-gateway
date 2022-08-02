@@ -57,8 +57,8 @@ export class UserController {
     }
 
     try {
-      const { data } = await this.userService.jwt(jwt);
-      console.log(`Get Result: `, data);
+      // const { data } = await this.userService.jwt(jwt);
+      // console.log(`Get Result: `, data);
 
       return res.send({
         statusCode: HttpStatus.OK,

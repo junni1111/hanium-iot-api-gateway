@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import { CreateMasterDto } from '../dto/master/create-master.dto';
+import { CreateMasterDto } from './dto/create-master.dto';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 
