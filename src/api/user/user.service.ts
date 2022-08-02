@@ -72,6 +72,6 @@ export class UserService {
   }
 
   clearUserDB() {
-    return lastValueFrom(this.httpService.delete(this.requestUrl('db/clear')));
+    return lastValueFrom(this.httpService.delete(this.requestUrl('db')));
   }
 }

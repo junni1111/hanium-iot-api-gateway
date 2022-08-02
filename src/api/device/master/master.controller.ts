@@ -74,6 +74,7 @@ export class MasterController {
       return res.send({
         statusCode: HttpStatus.OK,
         message: 'db clear completed',
+        data,
       });
     } catch (e) {
       throw e;
