@@ -56,4 +56,12 @@ export class ThermometerService {
       ),
     );
   }
+
+  async clearThermometerDB() {
+    return lastValueFrom(
+      this.httpService.delete(
+        this.deviceMicroservice.requestUrl('temperature/db'),
+      ),
+    );
+  }
 }

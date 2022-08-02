@@ -43,4 +43,12 @@ export class WaterPumpService {
       ),
     );
   }
+
+  async clearWaterPumpDB() {
+    return lastValueFrom(
+      this.httpService.delete(
+        this.deviceMicroservice.requestUrl('water-pump/db'),
+      ),
+    );
+  }
 }

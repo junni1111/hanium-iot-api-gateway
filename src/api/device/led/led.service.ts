@@ -40,4 +40,10 @@ export class LedService {
       ),
     );
   }
+
+  async clearLedDB() {
+    return lastValueFrom(
+      this.httpService.delete(this.deviceMicroservice.requestUrl('led/db')),
+    );
+  }
 }

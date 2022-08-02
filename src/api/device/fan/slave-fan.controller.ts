@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Headers,
   HttpStatus,
   NotFoundException,
@@ -41,6 +42,20 @@ export class SlaveFanController {
     } catch (e) {
       console.log(e);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });
+    }
+  }
+
+  @Delete('db')
+  async clearFanDB(@Res() res: Response) {
+    try {
+      const { data } = await this.fanService.clearFanDB();
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'db clear completed',
+      });
+    } catch (e) {
+      throw e;
     }
   }
 }

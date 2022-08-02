@@ -34,4 +34,8 @@ export class MasterService {
       }),
     );
   }
+
+  async clearMasterDB() {
+    return lastValueFrom(this.httpService.delete(this.requestUrl('master/db')));
+  }
 }

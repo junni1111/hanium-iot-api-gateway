@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Headers,
   HttpStatus,
@@ -98,6 +99,20 @@ export class SlaveController {
       return res.status(result.status).json(result);
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  @Delete('db')
+  async clearSlaveDB(@Res() res: Response) {
+    try {
+      const { data } = await this.slaveService.clearSlaveDB();
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'db clear completed',
+      });
+    } catch (e) {
+      throw e;
     }
   }
 }

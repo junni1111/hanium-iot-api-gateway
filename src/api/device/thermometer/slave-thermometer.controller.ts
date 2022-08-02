@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpStatus,
@@ -155,6 +156,20 @@ export class SlaveTemperatureController {
       return data;
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  @Delete('db')
+  async clearThermometerDB(@Res() res: Response) {
+    try {
+      const { data } = await this.thermometerService.clearThermometerDB();
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'db clear completed',
+      });
+    } catch (e) {
+      throw e;
     }
   }
 }
