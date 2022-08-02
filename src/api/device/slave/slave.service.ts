@@ -37,4 +37,10 @@ export class SlaveService {
       ),
     );
   }
+
+  async clearSlaveDB() {
+    return lastValueFrom(
+      this.httpService.delete(this.deviceMicroservice.requestUrl('slave/db')),
+    );
+  }
 }

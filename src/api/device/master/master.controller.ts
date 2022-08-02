@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpStatus,
@@ -64,6 +65,20 @@ export class MasterController {
       return res.status(HttpStatus.OK).json(data);
     } catch (e) {
       return e;
+    }
+  }
+
+  @Delete('db')
+  async clearMasterDB(@Res() res: Response) {
+    try {
+      const { data } = await this.masterService.clearMasterDB();
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'db clear completed',
+      });
+    } catch (e) {
+      throw e;
     }
   }
 }

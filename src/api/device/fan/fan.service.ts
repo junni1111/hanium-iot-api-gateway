@@ -19,4 +19,10 @@ export class FanService {
       ),
     );
   }
+
+  async clearFanDB() {
+    return lastValueFrom(
+      this.httpService.delete(this.deviceMicroservice.requestUrl('fan/db')),
+    );
+  }
 }

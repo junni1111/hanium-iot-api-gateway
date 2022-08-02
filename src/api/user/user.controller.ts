@@ -2,6 +2,7 @@ import { UserService } from './user.service';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpException,
@@ -167,10 +168,10 @@ export class UserController {
     }
   }
 
-  @Get('db/clear')
-  async dbClear(@Res() res: Response) {
+  @Delete('db')
+  async clearUserDB(@Res() res: Response) {
     try {
-      const { data } = await this.userService.dbClear();
+      const { data } = await this.userService.clearUserDB();
 
       return res.send({
         statusCode: HttpStatus.OK,

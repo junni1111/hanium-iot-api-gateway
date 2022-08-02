@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpStatus,
@@ -108,6 +109,20 @@ export class SlaveLedController {
     } catch (e) {
       console.log(e);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });
+    }
+  }
+
+  @Delete('db')
+  async clearLedDB(@Res() res: Response) {
+    try {
+      const { data } = await this.ledService.clearLedDB();
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'db clear completed',
+      });
+    } catch (e) {
+      throw e;
     }
   }
 }

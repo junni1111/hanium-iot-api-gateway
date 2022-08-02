@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpStatus,
@@ -106,6 +107,20 @@ export class SlaveWaterPumpController {
     } catch (e) {
       console.log(e);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });
+    }
+  }
+
+  @Delete('db')
+  async clearWaterPumpDB(@Res() res: Response) {
+    try {
+      const { data } = await this.waterPumpService.clearWaterPumpDB();
+
+      return res.send({
+        statusCode: HttpStatus.OK,
+        message: 'db clear completed',
+      });
+    } catch (e) {
+      throw e;
     }
   }
 }
