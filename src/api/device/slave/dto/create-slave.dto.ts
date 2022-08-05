@@ -1,7 +1,17 @@
-import { PickType } from '@nestjs/swagger';
-import { Slave } from '../entities/slave.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
-export class CreateSlaveDto extends PickType(Slave, [
-  'masterId',
-  'slaveId',
-] as const) {}
+export class CreateSlaveDto {
+  constructor(masterId: number, slaveId: number) {
+    this.masterId = masterId;
+    this.slaveId = slaveId;
+  }
+
+  @ApiProperty()
+  @IsNumber()
+  masterId: number;
+
+  @ApiProperty()
+  @IsNumber()
+  slaveId: number;
+}
