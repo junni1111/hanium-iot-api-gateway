@@ -170,18 +170,11 @@ export class UserController {
   }
 
   @Post('message')
-  async sendMessage(
-    @Res() res: Response,
-    @Body() sendMessageDto: SendMessageDto,
-  ) {
+  async sendMessage(@Body() sendMessageDto: SendMessageDto) {
     try {
       const { data } = await this.userService.sendMessage(sendMessageDto);
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'db clear completed',
-        data,
-      });
+      return data;
     } catch (e) {
       throw e;
     }

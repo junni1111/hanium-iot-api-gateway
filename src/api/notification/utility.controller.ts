@@ -15,7 +15,7 @@ export class UtilityController {
   constructor(private notificationService: NotificationService) {}
 
   @Get('ping')
-  async pingToAuthMicroservice(@Res() res) {
+  async pingToNotificationMicroservice(@Res() res) {
     try {
       console.log(`call auth ping`);
 
