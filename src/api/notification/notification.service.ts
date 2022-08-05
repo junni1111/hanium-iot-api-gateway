@@ -10,15 +10,15 @@ export class NotificationService {
     private readonly configService: ConfigService,
   ) {}
   requestUrl(url: string) {
-    const USER_AUTH_HOST = this.configService.get<string>(
-      'USER_AUTH_HOST',
+    const NOTIFICATION_HOST = this.configService.get<string>(
+      'NOTIFICATION_HOST',
       '0.0.0.0',
     );
-    const USER_AUTH_PORT = this.configService.get<number>(
+    const NOTIFICATION_PORT = this.configService.get<number>(
       'NOTIFICATION_PORT_10000_TCP_PORT',
       10000,
     );
-    return `http://${USER_AUTH_HOST}:${USER_AUTH_PORT}/${url}`;
+    return `http://${NOTIFICATION_HOST}:${NOTIFICATION_PORT}/${url}`;
   }
 
   ping() {
