@@ -13,9 +13,9 @@ import {
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
-import { WaterPumpConfigDto } from '../dto/water-pump/water-pump-config.dto';
-import { WaterPumpStateDto } from '../dto/water-pump/water-pump-state.dto';
-import { WaterPumpPowerDto } from '../dto/water-pump/water-pump-power.dto';
+import { WaterPumpConfigDto } from './dto/water-pump-config.dto';
+import { WaterPumpStateDto } from './dto/water-pump-state.dto';
+import { WaterPumpPowerDto } from './dto/water-pump-power.dto';
 import { ResponseStatus } from '../interfaces/response-status';
 import { MasterService } from '../master/master.service';
 import { WaterPumpService } from './water-pump.service';

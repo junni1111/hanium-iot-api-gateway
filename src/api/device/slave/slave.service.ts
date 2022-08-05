@@ -1,9 +1,9 @@
-import { MasterService } from '../master/master.service';
 import { Injectable } from '@nestjs/common';
-import { lastValueFrom } from 'rxjs';
-import { CreateSlaveDto } from '../dto/slave/create-slave.dto';
 import { HttpService } from '@nestjs/axios';
-import { SlaveStateDto } from '../dto/slave/slave-state.dto';
+import { MasterService } from '../master/master.service';
+import { CreateSlaveDto } from './dto/create-slave.dto';
+import { SlaveStateDto } from './dto/slave-state.dto';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class SlaveService {

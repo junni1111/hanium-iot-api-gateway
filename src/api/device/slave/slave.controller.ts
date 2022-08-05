@@ -12,8 +12,8 @@ import {
 import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MasterService } from '../master/master.service';
-import { CreateSlaveDto } from '../dto/slave/create-slave.dto';
-import { SlaveStateDto } from '../dto/slave/slave-state.dto';
+import { CreateSlaveDto } from './dto/create-slave.dto';
+import { SlaveStateDto } from './dto/slave-state.dto';
 import { SLAVE } from '../../../util/constants/swagger';
 import { ResponseStatus } from '../interfaces/response-status';
 import { SlaveService } from './slave.service';
@@ -26,8 +26,6 @@ export class SlaveController {
     private masterService: MasterService,
     private slaveService: SlaveService,
   ) {}
-
-  /* Todo: Refactor URL path */
 
   @Post()
   async createSlave(

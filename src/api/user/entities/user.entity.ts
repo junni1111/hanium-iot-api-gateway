@@ -1,9 +1,9 @@
 import {
-  Entity,
   Column,
   CreateDateColumn,
-  PrimaryGeneratedColumn,
+  Entity,
   Index,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IsDate, IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
 import { UserRoles } from '../enums/user-role';
@@ -36,7 +36,7 @@ export class User {
   username: string;
 
   @ApiProperty({ example: '010-1234-5678', description: 'User phone number' })
-  @Column({ unique: true, name: 'phone_num' })
+  @Column({ unique: true, name: 'phone_number' })
   @IsString()
   phoneNumber: string;
 

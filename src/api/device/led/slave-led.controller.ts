@@ -13,9 +13,9 @@ import {
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic, ESlaveState } from '../../../util/api-topic';
-import { LedConfigDto } from '../dto/led/led-config.dto';
-import { LedStateDto } from '../dto/led/led-state.dto';
-import { LedPowerDto } from '../dto/led/led-power.dto';
+import { LedConfigDto } from './dto/led-config.dto';
+import { LedStateDto } from './dto/led-state.dto';
+import { LedPowerDto } from './dto/led-power.dto';
 import { ResponseStatus } from '../interfaces/response-status';
 import { LedService } from './led.service';
 import { MasterService } from '../master/master.service';
@@ -43,7 +43,6 @@ export class SlaveLedController {
       throw new NotFoundException('Jwt Not Found');
     }
 
-    console.log(`Call Led State`);
     try {
       const { data } = await this.ledService.getLedState(
         new LedStateDto(masterId, slaveId),

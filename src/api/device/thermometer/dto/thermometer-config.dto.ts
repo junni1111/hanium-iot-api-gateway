@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/swagger';
-import { SlaveConfigDto } from '../slave/slave-config.dto';
+import { SlaveConfigDto } from '../../slave/dto/slave-config.dto';
 
 export class ThermometerConfigDto extends PickType(SlaveConfigDto, [
   'masterId',

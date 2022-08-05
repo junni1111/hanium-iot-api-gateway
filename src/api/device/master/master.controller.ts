@@ -11,7 +11,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { CreateMasterDto } from '../dto/master/create-master.dto';
+import { CreateMasterDto } from './dto/create-master.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { MASTER } from '../../../util/constants/swagger';

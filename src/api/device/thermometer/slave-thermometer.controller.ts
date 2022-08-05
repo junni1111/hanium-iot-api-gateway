@@ -14,12 +14,12 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ESlaveConfigTopic } from 'src/util/api-topic';
-import { ThermometerConfigDto } from '../dto/thermometer/thermometer-config.dto';
+import { ThermometerConfigDto } from './dto/thermometer-config.dto';
+import { TemperatureBetweenDto } from './dto/temperature-between.dto';
 import { ResponseStatus } from '../interfaces/response-status';
 import { MasterService } from '../master/master.service';
 import { ThermometerService } from './thermometer.service';
 import { THERMOMETER } from '../../../util/constants/swagger';
-import { TemperatureBetweenDto } from '../dto/thermometer/temperature-between.dto';
 
 @ApiTags(THERMOMETER)
 @ApiBearerAuth('access-token')

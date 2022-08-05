@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { MasterService } from '../master/master.service';
-import { SlavePowerDto } from '../dto/slave/slave-power.dto';
 import { HttpService } from '@nestjs/axios';
+import { FanPowerDto } from './dto/fan-power.dto';
 
 @Injectable()
 export class FanService {
@@ -11,7 +11,7 @@ export class FanService {
     private readonly httpService: HttpService,
   ) {}
 
-  async turnFan(fanPowerDto: SlavePowerDto) {
+  async turnFan(fanPowerDto: FanPowerDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('fan/power'),
