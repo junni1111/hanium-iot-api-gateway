@@ -1,9 +1,9 @@
 import {
-  Entity,
   Column,
   CreateDateColumn,
-  PrimaryGeneratedColumn,
+  Entity,
   Index,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IsDate, IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
 import { UserRoles } from '../enums/user-role';

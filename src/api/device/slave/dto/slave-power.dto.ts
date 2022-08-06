@@ -1,16 +1,19 @@
 import { IsIn, IsNumber, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-/** Abstract OR Partial */
 export class SlavePowerDto {
+  @ApiProperty()
   @IsNumber()
-  private masterId: number;
+  readonly masterId: number;
 
+  @ApiProperty()
   @IsNumber()
-  private slaveId: number;
+  readonly slaveId: number;
 
+  @ApiProperty()
   @IsString()
   @IsIn(['on', 'off'], {
     message: `'powerState' is not 'on' or 'off'`,
   })
-  private powerState: string;
+  readonly powerState: string;
 }

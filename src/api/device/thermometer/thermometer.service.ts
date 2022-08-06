@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { MasterService } from '../master/master.service';
-import { ThermometerConfigDto } from '../dto/thermometer/thermometer-config.dto';
-import { TemperatureBetweenDto } from '../dto/thermometer/temperature-between.dto';
+import { ThermometerConfigDto } from './dto/thermometer-config.dto';
+import { TemperatureBetweenDto } from './dto/temperature-between.dto';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()

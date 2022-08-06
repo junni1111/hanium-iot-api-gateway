@@ -17,6 +17,7 @@ import { Request, Response } from 'express';
 import { SignInDto } from './dto/sign-in.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { USER } from '../../util/constants/swagger';
+import { SendMessageDto } from './dto/send-message.dto';
 
 @ApiTags(USER)
 @Controller('api/user-service')
@@ -168,6 +169,17 @@ export class UserController {
     }
   }
 
+  @Post('message')
+  async sendMessage(@Body() sendMessageDto: SendMessageDto) {
+    try {
+      const { data } = await this.userService.sendMessage(sendMessageDto);
+
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   @Delete('db')
   async clearUserDB(@Res() res: Response) {
     try {
@@ -176,6 +188,7 @@ export class UserController {
       return res.send({
         statusCode: HttpStatus.OK,
         message: 'db clear completed',
+        data,
       });
     } catch (e) {
       throw e;

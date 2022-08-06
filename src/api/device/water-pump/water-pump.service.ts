@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { MasterService } from '../master/master.service';
-import { WaterPumpConfigDto } from '../dto/water-pump/water-pump-config.dto';
-import { WaterPumpPowerDto } from '../dto/water-pump/water-pump-power.dto';
-import { WaterPumpStateDto } from '../dto/water-pump/water-pump-state.dto';
+import { WaterPumpConfigDto } from './dto/water-pump-config.dto';
+import { WaterPumpPowerDto } from './dto/water-pump-power.dto';
+import { WaterPumpStateDto } from './dto/water-pump-state.dto';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
@@ -34,8 +34,6 @@ export class WaterPumpService {
   }
 
   async getWaterPumpState(waterPumpStateDto: WaterPumpStateDto) {
-    console.log(`call water pump state service`);
-
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('water-pump/state'),

@@ -4,8 +4,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
-import { AuthUserDto } from './dto/auth-user.dto';
-import { AxiosResponse } from 'axios';
+import { SendMessageDto } from './dto/send-message.dto';
 
 @Injectable()
 export class UserService {
@@ -74,7 +73,13 @@ export class UserService {
     );
   }
 
+  sendMessage(sendMessageDto: SendMessageDto) {
+    return lastValueFrom(
+      this.httpService.post(this.requestUrl('message'), sendMessageDto),
+    );
+  }
+
   clearUserDB() {
-    return lastValueFrom(this.httpService.delete(this.requestUrl('db/clear')));
+    return lastValueFrom(this.httpService.delete(this.requestUrl('db')));
   }
 }

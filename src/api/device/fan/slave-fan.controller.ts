@@ -12,7 +12,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { MasterService } from '../master/master.service';
 import { FanService } from './fan.service';
-import { SlavePowerDto } from '../dto/slave/slave-power.dto';
+import { FanPowerDto } from './dto/fan-power.dto';
 import { FAN } from '../../../util/constants/swagger';
 
 @ApiTags(FAN)
@@ -28,7 +28,7 @@ export class SlaveFanController {
   async setPowerFan(
     @Headers() header: any,
     @Res() res: Response,
-    @Body() fanPowerDto: SlavePowerDto,
+    @Body() fanPowerDto: FanPowerDto,
   ) {
     const jwt = header['authorization']?.split(' ')[1];
     if (!jwt) {
@@ -53,6 +53,7 @@ export class SlaveFanController {
       return res.send({
         statusCode: HttpStatus.OK,
         message: 'db clear completed',
+        data,
       });
     } catch (e) {
       throw e;

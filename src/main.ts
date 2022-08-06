@@ -32,7 +32,9 @@ async function bootstrap() {
   );
 
   console.log(`ENV List: `, process.env);
-  await app.listen(GATEWAY_PORT);
+  await app.listen(GATEWAY_PORT, () => {
+    console.log(`LISTENING HOST : ${GATEWAY_HOST}, PORT : ${GATEWAY_PORT}`);
+  });
 }
 
 bootstrap();

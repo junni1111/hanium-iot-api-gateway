@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import { LedConfigDto } from '../dto/led/led-config.dto';
+import { LedConfigDto } from './dto/led-config.dto';
 import { MasterService } from '../master/master.service';
-import { LedPowerDto } from '../dto/led/led-power.dto';
-import { LedStateDto } from '../dto/led/led-state.dto';
+import { LedPowerDto } from './dto/led-power.dto';
+import { LedStateDto } from './dto/led-state.dto';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
@@ -32,7 +32,6 @@ export class LedService {
   }
 
   async turnLed(ledPowerDto: LedPowerDto) {
-    console.log(`call turn led`, ledPowerDto);
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('led/power'),
