@@ -5,7 +5,6 @@ import {
   Get,
   Headers,
   HttpStatus,
-  NotFoundException,
   Post,
   Query,
   Res,
@@ -47,16 +46,13 @@ export class MasterController {
 
   /* TODO: Make Polling DTO*/
   @Get('state')
+  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  @UseGuards(AuthGuard)
   async getMasterState(
     @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
     try {
       const { data } = await this.masterService.getMasterState(masterId);
 

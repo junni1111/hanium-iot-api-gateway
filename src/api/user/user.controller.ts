@@ -11,6 +11,7 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
@@ -18,6 +19,9 @@ import { SignInDto } from './dto/sign-in.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { USER } from '../../util/constants/swagger';
 import { SendMessageDto } from './dto/send-message.dto';
+import { RolesGuard } from './guards/roles.guard';
+import { UserRoles } from './enums/user-role';
+import { AuthGuard } from './guards/auth.guard';
 
 @ApiTags(USER)
 @Controller('api/user-service')
@@ -50,18 +54,11 @@ export class UserController {
     }
   }
 
-  @ApiBearerAuth('access-token')
   @Post('jwt')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('access-token')
   async jwt(@Headers() header: any, @Res() res: Response) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
     try {
-      // const { data } = await this.userService.jwt(jwt);
-      // console.log(`Get Result: `, data);
-
       return res.send({
         statusCode: HttpStatus.OK,
         message: 'Jwt Is Validate',

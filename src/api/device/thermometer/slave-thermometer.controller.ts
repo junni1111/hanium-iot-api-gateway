@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -20,6 +21,9 @@ import { ResponseStatus } from '../interfaces/response-status';
 import { MasterService } from '../master/master.service';
 import { ThermometerService } from './thermometer.service';
 import { THERMOMETER } from '../../../util/constants/swagger';
+import { RolesGuard } from '../../user/guards/roles.guard';
+import { UserRoles } from '../../user/enums/user-role';
+import { AuthGuard } from '../../user/guards/auth.guard';
 
 @ApiTags(THERMOMETER)
 @ApiBearerAuth('access-token')
@@ -31,16 +35,13 @@ export class SlaveTemperatureController {
   ) {}
 
   @Post('temperature/between')
+  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  @UseGuards(AuthGuard)
   async getTemperatures(
     @Headers() header: any,
     @Res() res: Response,
     @Body() temperatureBetweenDto: TemperatureBetweenDto,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
     try {
       const { data } = await this.thermometerService.getTemperatures(
         temperatureBetweenDto,
@@ -61,17 +62,13 @@ export class SlaveTemperatureController {
   }
 
   @Get('temperature/now')
+  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  @UseGuards(AuthGuard)
   async getCurrentTemperature(
-    @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
     try {
       const { data } = await this.thermometerService.getCurrentTemperature(
         masterId,
@@ -91,16 +88,12 @@ export class SlaveTemperatureController {
 
   /** Todo: 재한이한테 URL 수정 알려주기 */
   @Post('temperature/week')
+  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  @UseGuards(AuthGuard)
   async getTemperatureOneWeek(
-    @Headers() header: any,
     @Res() res: Response,
     @Body() temperatureBetweenDto: TemperatureBetweenDto,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
     const { data } = await this.thermometerService.getTemperatureOneWeek(
       temperatureBetweenDto,
     );
@@ -109,16 +102,12 @@ export class SlaveTemperatureController {
   }
 
   @Post('config')
+  @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  @UseGuards(AuthGuard)
   async setThermometerConfig(
-    @Headers() header: any,
     @Res() res: Response,
     @Body() thermometerConfigDto: ThermometerConfigDto,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
     try {
       const { data } = await this.thermometerService.setThermometerConfig(
         thermometerConfigDto,

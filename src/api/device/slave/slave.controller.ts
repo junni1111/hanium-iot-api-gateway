@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -17,6 +18,9 @@ import { SlaveStateDto } from './dto/slave-state.dto';
 import { SLAVE } from '../../../util/constants/swagger';
 import { ResponseStatus } from '../interfaces/response-status';
 import { SlaveService } from './slave.service';
+import { RolesGuard } from '../../user/guards/roles.guard';
+import { UserRoles } from '../../user/enums/user-role';
+import { AuthGuard } from '../../user/guards/auth.guard';
 
 @ApiTags(SLAVE)
 @ApiBearerAuth('access-token')
@@ -28,17 +32,14 @@ export class SlaveController {
   ) {}
 
   @Post()
+  @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  @UseGuards(AuthGuard)
   async createSlave(
     @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
     try {
       const { data } = await this.slaveService.createSlave(
         new CreateSlaveDto(masterId, slaveId),
@@ -51,6 +52,8 @@ export class SlaveController {
   }
 
   @Get('state')
+  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  @UseGuards(AuthGuard)
   async getSensorsState(
     @Headers() header: any,
     @Res() res: Response,
@@ -70,17 +73,14 @@ export class SlaveController {
   }
 
   @Get('config')
+  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  @UseGuards(AuthGuard)
   async fetchConfig(
     @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
     try {
       const { data } = await this.slaveService.getSlaveConfigs(
         masterId,
