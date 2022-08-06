@@ -33,7 +33,6 @@ export class MasterController {
     @Res() res: Response,
     @Body() createMasterDto: CreateMasterDto,
   ) {
-    // Todo : jwt 유효성 확인 및 사용자 정보 확인
     const user = createMasterDto?.user;
     console.log(`DTO User: `, user);
 
@@ -41,7 +40,6 @@ export class MasterController {
       const { data } = await this.masterService.createMaster(createMasterDto);
 
       return res.status(data.status).json(data);
-      // return res.json(user);
     } catch (e) {
       console.log(e);
     }

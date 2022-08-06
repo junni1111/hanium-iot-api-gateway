@@ -13,7 +13,7 @@ export class LedService {
     private readonly httpService: HttpService,
   ) {}
 
-  async setLedConfig(ledConfigDto: LedConfigDto) {
+  setLedConfig(ledConfigDto: LedConfigDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('led/config'),

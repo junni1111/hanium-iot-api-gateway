@@ -68,15 +68,16 @@ export class SlaveLedController {
     @Res() res: Response,
     @Body() ledConfigDto: LedConfigDto,
   ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
+    // const jwt = header['authorization']?.split(' ')[1];
+    // if (!jwt) {
+    //   throw new NotFoundException('Jwt Not Found');
+    // }
 
+    console.log(`Call led config`);
     try {
       console.log(`call led config`);
       console.log(ledConfigDto);
-      const { data } = await this.ledService.setLedConfig(ledConfigDto);
+      const data = await this.ledService.setLedConfig(ledConfigDto);
 
       return res.status(data.status).json(data);
     } catch (e) {

@@ -1,10 +1,10 @@
-import { PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Master } from '../entities/master.entity';
 import { AuthUserDto } from '../../../user/dto/auth-user.dto';
 import { IsObject } from 'class-validator';
 
 export class CreateMasterDto extends PickType(Master, [
-  'id',
+  'masterId',
   'address',
 ] as const) {
   @IsObject()

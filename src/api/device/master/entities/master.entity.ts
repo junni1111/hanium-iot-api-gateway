@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
-  Index,
 } from 'typeorm';
 import { IsDate, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -13,7 +12,7 @@ export class Master {
   @ApiProperty({ example: 1234, description: 'Master id' })
   @PrimaryGeneratedColumn({ type: 'integer', name: 'id' })
   @IsNumber()
-  id: number;
+  masterId: number;
 
   @ApiProperty({ example: 'example', description: 'Example address' })
   @Column({ name: 'username' })
