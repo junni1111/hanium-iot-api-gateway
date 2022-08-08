@@ -5,6 +5,11 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { SendMessageDto } from './dto/send-message.dto';
+import { TokensDto } from './dto/tokens.dto';
+import { User } from './entities/user.entity';
+import { AxiosResponse } from 'axios';
+import { ValidateJwtDto } from './dto/validate-jwt.dto';
+import { AuthUserDto } from './dto/auth-user.dto';
 
 @Injectable()
 export class UserService {
@@ -28,18 +33,20 @@ export class UserService {
     return lastValueFrom(this.httpService.get(this.requestUrl('')));
   }
 
-  signUp(createUserDto: CreateUserDto) {
-    return lastValueFrom(
-      this.httpService.post(this.requestUrl('signup'), createUserDto),
-    );
+  me(user: AuthUserDto) {
+    return lastValueFrom(this.httpService.get(this.requestUrl('')));
   }
 
-  async jwt(jwt: string): Promise<any> {
-    const { data: user } = await lastValueFrom(
-      this.httpService.get(this.requestUrl('jwt'), { params: { jwt } }),
-    );
+  signUp(createUserDto: CreateUserDto): Promise<User> {
+    return lastValueFrom(
+      this.httpService.post(this.requestUrl('signup'), createUserDto),
+    ).then((res) => res.data);
+  }
 
-    return user;
+  jwt(jwt: string): Promise<ValidateJwtDto> {
+    return lastValueFrom(
+      this.httpService.get(this.requestUrl('jwt'), { params: { jwt } }),
+    ).then((res) => res.data);
   }
 
   refresh(tokens: any) {
@@ -54,13 +61,13 @@ export class UserService {
   }
 
   /** Todo: Replace to JWT */
-  signIn(signInDto: SignInDto) {
+  signIn(signInDto: SignInDto): Promise<TokensDto> {
     return lastValueFrom(
       this.httpService.post(this.requestUrl('signin'), {
         email: signInDto.email,
         password: signInDto.password,
       }),
-    );
+    ).then((res) => res.data);
   }
 
   signOut(userId: number) {

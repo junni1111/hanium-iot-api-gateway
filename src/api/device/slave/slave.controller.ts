@@ -32,7 +32,7 @@ export class SlaveController {
   ) {}
 
   @Post()
-  @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  // @UseGuards(RolesGuard([UserRoles.ADMIN]))
   @UseGuards(AuthGuard)
   async createSlave(
     @Headers() header: any,
@@ -52,7 +52,7 @@ export class SlaveController {
   }
 
   @Get('state')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
   @UseGuards(AuthGuard)
   async getSensorsState(
     @Headers() header: any,
@@ -73,7 +73,7 @@ export class SlaveController {
   }
 
   @Get('config')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
   @UseGuards(AuthGuard)
   async fetchConfig(
     @Headers() header: any,

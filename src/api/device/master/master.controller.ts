@@ -54,6 +54,7 @@ export class MasterController {
     @Query('master_id') masterId: number,
   ) {
     try {
+      console.log(`Call Polling `, masterId);
       const { data } = await this.masterService.getMasterState(masterId);
 
       return res.status(HttpStatus.OK).json(data);
