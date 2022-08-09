@@ -17,6 +17,7 @@ export class UtilityController {
   async pingToAuthMicroservice(@Res() res): Promise<ResponseGeneric<string>> {
     try {
       console.log(`call auth ping`);
+
       const result = await this.userService.ping();
       console.log(`Ping Auth Microservice Result: `, result);
 

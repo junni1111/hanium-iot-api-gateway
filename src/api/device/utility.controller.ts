@@ -19,9 +19,9 @@ export class UtilityController {
   })
   @Get('ping')
   async pingToDeviceMicroservice(@Res() res): Promise<ResponseGeneric<string>> {
-    console.log(`call device ping`);
-
     try {
+      console.log(`call device ping`);
+
       const result = await this.masterService.ping();
       console.log(`Ping Device Microservice Result: `, result);
 
