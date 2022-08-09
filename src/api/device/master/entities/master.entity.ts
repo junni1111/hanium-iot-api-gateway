@@ -20,7 +20,7 @@ export class Master {
   masterId: number;
 
   @ApiProperty({ example: 'example', description: 'Example address' })
-  @Column({ name: 'username' })
+  @Column({ type: 'varchar' })
   @IsString()
   address: string;
 

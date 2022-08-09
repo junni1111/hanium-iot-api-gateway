@@ -19,30 +19,30 @@ export class LedService {
         this.deviceMicroservice.requestUrl('led/config'),
         ledConfigDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async getLedState(ledStateDto: LedStateDto) {
+  getLedState(ledStateDto: LedStateDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('led/state'),
         ledStateDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async turnLed(ledPowerDto: LedPowerDto) {
+  turnLed(ledPowerDto: LedPowerDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('led/power'),
         ledPowerDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async clearLedDB() {
+  clearLedDB() {
     return lastValueFrom(
       this.httpService.delete(this.deviceMicroservice.requestUrl('led/db')),
-    );
+    ).then((res) => res.data);
   }
 }

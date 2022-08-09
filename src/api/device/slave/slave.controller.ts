@@ -1,26 +1,30 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Headers,
   HttpStatus,
-  NotFoundException,
   Post,
   Query,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MasterService } from '../master/master.service';
 import { CreateSlaveDto } from './dto/create-slave.dto';
 import { SlaveStateDto } from './dto/slave-state.dto';
 import { SLAVE } from '../../../util/constants/swagger';
-import { ResponseStatus } from '../interfaces/response-status';
 import { SlaveService } from './slave.service';
-import { RolesGuard } from '../../user/guards/roles.guard';
-import { UserRoles } from '../../user/enums/user-role';
-import { AuthGuard } from '../../user/guards/auth.guard';
+import { ResponseGeneric } from '../../types/response-generic';
+import { Slave } from './entities/slave.entity';
+import { SlaveStateResponse } from './response/slave-state.response';
+import { SlaveConfigResponse } from './response/slave-config.response';
 
 @ApiTags(SLAVE)
 @ApiBearerAuth('access-token')
@@ -31,87 +35,84 @@ export class SlaveController {
     private slaveService: SlaveService,
   ) {}
 
+  @ApiCreatedResponse({ description: 'SLAVE 생성 API', type: Slave })
   @Post()
   // @UseGuards(RolesGuard([UserRoles.ADMIN]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async createSlave(
     @Headers() header: any,
     @Res() res: Response,
-    @Query('master_id') masterId: number,
-    @Query('slave_id') slaveId: number,
-  ) {
+    @Body() createSlaveDto: CreateSlaveDto,
+  ): Promise<ResponseGeneric<Slave>> {
     try {
-      const { data } = await this.slaveService.createSlave(
-        new CreateSlaveDto(masterId, slaveId),
-      );
+      const slave = await this.slaveService.createSlave(createSlaveDto);
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.CREATED).send(slave);
     } catch (e) {
-      console.log(e);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: 'SLAVE 전원 상태 API',
+    type: SlaveStateResponse,
+  })
   @Get('state')
   // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async getSensorsState(
     @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
-  ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
+  ): Promise<ResponseGeneric<SlaveStateResponse>> {
     try {
-      const { data } = await this.slaveService.getSlaveState(
+      const slaveStateResponse = await this.slaveService.getSlaveState(
         new SlaveStateDto(masterId, slaveId),
       );
-      return res.status(HttpStatus.OK).json(data);
-    } catch (e) {}
+      return res.status(HttpStatus.OK).send(slaveStateResponse);
+    } catch (e) {
+      return res.status(e.statusCode).send(e.message);
+    }
   }
 
+  @ApiOkResponse({
+    description: 'SLAVE 설정 상태 API',
+    type: SlaveConfigResponse,
+  })
   @Get('config')
   // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async fetchConfig(
     @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
-  ) {
+  ): Promise<ResponseGeneric<SlaveConfigResponse>> {
     try {
-      const { data } = await this.slaveService.getSlaveConfigs(
+      const slaveConfigResponse = await this.slaveService.getSlaveConfigs(
         masterId,
         slaveId,
       );
 
-      const result: ResponseStatus = {
-        status: HttpStatus.OK,
-        topic: `configs`,
-        message: `success get slave configs`,
-        data,
-      };
-
-      return res.status(result.status).json(result);
+      return res.status(HttpStatus.OK).send(slaveConfigResponse);
     } catch (e) {
-      console.log(e);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: 'SLAVE DB 삭제 API',
+    schema: { type: 'string', example: '1' },
+  })
   @Delete('db')
-  async clearSlaveDB(@Res() res: Response) {
+  async clearSlaveDB(@Res() res: Response): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.slaveService.clearSlaveDB();
+      const result = await this.slaveService.clearSlaveDB();
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'db clear completed',
-        data,
-      });
+      return res.status(HttpStatus.OK).send(result.affected.toString());
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 }

@@ -13,16 +13,16 @@ export class WaterPumpService {
     private readonly httpService: HttpService,
   ) {}
 
-  async setWaterPumpConfig(waterPumpConfigDto: WaterPumpConfigDto) {
+  setWaterPumpConfig(waterPumpConfigDto: WaterPumpConfigDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('water-pump/config'),
         waterPumpConfigDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async turnWaterPump(waterPumpTurnDto: WaterPumpPowerDto) {
+  turnWaterPump(waterPumpTurnDto: WaterPumpPowerDto) {
     console.log(`call turn water pump`, waterPumpTurnDto);
 
     return lastValueFrom(
@@ -30,23 +30,23 @@ export class WaterPumpService {
         this.deviceMicroservice.requestUrl('water-pump/power'),
         waterPumpTurnDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async getWaterPumpState(waterPumpStateDto: WaterPumpStateDto) {
+  getWaterPumpState(waterPumpStateDto: WaterPumpStateDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('water-pump/state'),
         waterPumpStateDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async clearWaterPumpDB() {
+  clearWaterPumpDB() {
     return lastValueFrom(
       this.httpService.delete(
         this.deviceMicroservice.requestUrl('water-pump/db'),
       ),
-    );
+    ).then((res) => res.data);
   }
 }

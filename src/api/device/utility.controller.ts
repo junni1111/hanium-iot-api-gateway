@@ -1,9 +1,9 @@
-import { Controller, Get, Res } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { MasterService } from './master/master.service';
-import { lastValueFrom } from 'rxjs';
 import { UTILITY } from '../../util/constants/swagger';
 import { HttpService } from '@nestjs/axios';
+import { ResponseGeneric } from '../types/response-generic';
 
 @ApiTags(UTILITY)
 @Controller('api/device-service')
@@ -13,14 +13,21 @@ export class UtilityController {
     private readonly httpService: HttpService,
   ) {}
 
+  @ApiOkResponse({
+    description: 'Device MS 상태 확인 API',
+    schema: { type: 'string', example: 'device-pong' },
+  })
   @Get('ping')
-  async pingToDeviceMicroservice(@Res() res) {
+  async pingToDeviceMicroservice(@Res() res): Promise<ResponseGeneric<string>> {
     console.log(`call device ping`);
-    const { data } = await lastValueFrom(
-      this.httpService.get(this.masterService.requestUrl('ping')),
-    );
 
-    console.log(`Ping Device Microservice Result: `, data);
-    return res.send(data);
+    try {
+      const result = await this.masterService.ping();
+      console.log(`Ping Device Microservice Result: `, result);
+
+      return res.status(HttpStatus.OK).send(result);
+    } catch (e) {
+      return res.status(e.statusCode).send(e.message);
+    }
   }
 }

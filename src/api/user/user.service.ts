@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config';
 import { SendMessageDto } from './dto/send-message.dto';
 import { TokensDto } from './dto/tokens.dto';
 import { User } from './entities/user.entity';
-import { AxiosResponse } from 'axios';
 import { ValidateJwtDto } from './dto/validate-jwt.dto';
 import { AuthUserDto } from './dto/auth-user.dto';
 
@@ -30,11 +29,15 @@ export class UserService {
   }
 
   ping() {
-    return lastValueFrom(this.httpService.get(this.requestUrl('')));
+    return lastValueFrom(this.httpService.get(this.requestUrl(''))).then(
+      (res) => res.data,
+    );
   }
 
   me(user: AuthUserDto) {
-    return lastValueFrom(this.httpService.get(this.requestUrl('')));
+    return lastValueFrom(this.httpService.get(this.requestUrl(''))).then(
+      (res) => res.data,
+    );
   }
 
   signUp(createUserDto: CreateUserDto): Promise<User> {
@@ -57,7 +60,7 @@ export class UserService {
           refresh: tokens.refreshToken,
         },
       }),
-    );
+    ).then((res) => res.data);
   }
 
   /** Todo: Replace to JWT */
@@ -77,16 +80,18 @@ export class UserService {
           userId,
         },
       }),
-    );
+    ).then((res) => res.data);
   }
 
   sendMessage(sendMessageDto: SendMessageDto) {
     return lastValueFrom(
       this.httpService.post(this.requestUrl('message'), sendMessageDto),
-    );
+    ).then((res) => res.data);
   }
 
   clearUserDB() {
-    return lastValueFrom(this.httpService.delete(this.requestUrl('db')));
+    return lastValueFrom(this.httpService.delete(this.requestUrl('db'))).then(
+      (res) => res.data,
+    );
   }
 }

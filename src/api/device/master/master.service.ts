@@ -19,23 +19,31 @@ export class MasterService {
     return `http://${USER_HOST}:${USER_PORT}/${url}`;
   }
 
-  async createMaster(createMasterDto: CreateMasterDto) {
-    return lastValueFrom(
-      this.httpService.post(this.requestUrl('master'), createMasterDto),
+  ping() {
+    return lastValueFrom(this.httpService.get(this.requestUrl(''))).then(
+      (res) => res.data,
     );
   }
 
-  async getMasterState(masterId: number) {
+  createMaster(createMasterDto: CreateMasterDto) {
+    return lastValueFrom(
+      this.httpService.post(this.requestUrl('master'), createMasterDto),
+    ).then((res) => res.data);
+  }
+
+  getMasterState(masterId: number) {
     return lastValueFrom(
       this.httpService.post(this.requestUrl('master/polling'), {
         params: {
           masterId,
         },
       }),
-    );
+    ).then((res) => res.data);
   }
 
-  async clearMasterDB() {
-    return lastValueFrom(this.httpService.delete(this.requestUrl('master/db')));
+  clearMasterDB() {
+    return lastValueFrom(
+      this.httpService.delete(this.requestUrl('master/db')),
+    ).then((res) => res.data);
   }
 }

@@ -11,18 +11,18 @@ export class FanService {
     private readonly httpService: HttpService,
   ) {}
 
-  async turnFan(fanPowerDto: FanPowerDto) {
+  turnFan(fanPowerDto: FanPowerDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('fan/power'),
         fanPowerDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async clearFanDB() {
+  clearFanDB() {
     return lastValueFrom(
       this.httpService.delete(this.deviceMicroservice.requestUrl('fan/db')),
-    );
+    ).then((res) => res.data);
   }
 }

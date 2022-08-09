@@ -4,16 +4,16 @@ import {
   Delete,
   Headers,
   HttpStatus,
-  NotFoundException,
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { MasterService } from '../master/master.service';
 import { FanService } from './fan.service';
 import { FanPowerDto } from './dto/fan-power.dto';
 import { FAN } from '../../../util/constants/swagger';
+import { ResponseGeneric } from '../../types/response-generic';
 
 @ApiTags(FAN)
 @ApiBearerAuth('access-token')
@@ -24,39 +24,37 @@ export class SlaveFanController {
     private readonly fanService: FanService,
   ) {}
 
+  @ApiOkResponse({
+    description: 'FAN 전원 상태 변경 API',
+    schema: { type: 'string', example: 'ON' },
+  })
   @Post('config/power')
   async setPowerFan(
     @Headers() header: any,
     @Res() res: Response,
     @Body() fanPowerDto: FanPowerDto,
-  ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
+  ): Promise<ResponseGeneric<string>> {
     try {
-      console.log(`@@@@@@ Turn Fan Power`);
-      const { data } = await this.fanService.turnFan(fanPowerDto);
-      return res.status(data.status).json(data);
+      const fanPower = await this.fanService.turnFan(fanPowerDto);
+
+      return res.status(HttpStatus.OK).send(fanPower);
     } catch (e) {
-      console.log(e);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: 'FAN DB 삭제 API',
+    schema: { type: 'string', example: '1' },
+  })
   @Delete('db')
-  async clearFanDB(@Res() res: Response) {
+  async clearFanDB(@Res() res: Response): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.fanService.clearFanDB();
+      const result = await this.fanService.clearFanDB();
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'db clear completed',
-        data,
-      });
+      return res.status(HttpStatus.OK).send(result.affected.toString());
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 }

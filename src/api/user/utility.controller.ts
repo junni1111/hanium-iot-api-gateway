@@ -1,39 +1,28 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UTILITY } from '../../util/constants/swagger';
-import {
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { UserService } from './user.service';
+import { ResponseGeneric } from '../types/response-generic';
 
 @ApiTags(UTILITY)
 @Controller('api/user-service')
 export class UtilityController {
   constructor(private userService: UserService) {}
 
+  @ApiOkResponse({
+    description: 'AuthUser MS 상태 확인 API',
+    schema: { type: 'string', example: 'auth-pong' },
+  })
   @Get('ping')
-  async pingToAuthMicroservice(@Res() res) {
+  async pingToAuthMicroservice(@Res() res): Promise<ResponseGeneric<string>> {
     try {
       console.log(`call auth ping`);
+      const result = await this.userService.ping();
+      console.log(`Ping Auth Microservice Result: `, result);
 
-      const { data } = await this.userService.ping();
-
-      console.log(`Ping Auth Microservice Result: `, data);
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: data,
-      });
+      return res.status(HttpStatus.OK).send(result);
     } catch (e) {
-      throw new HttpException(
-        {
-          statusCode: e.response.data.statusCode,
-          message: e.response.data.message,
-        },
-        e.response.data.statusCode,
-      );
+      return res.status(e.statusCode).send(e.message);
     }
   }
 }

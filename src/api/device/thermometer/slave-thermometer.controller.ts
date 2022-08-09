@@ -5,25 +5,25 @@ import {
   Get,
   Headers,
   HttpStatus,
-  Logger,
-  NotFoundException,
   Post,
   Query,
   Res,
-  UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { Response } from 'express';
-import { ESlaveConfigTopic } from 'src/util/api-topic';
 import { ThermometerConfigDto } from './dto/thermometer-config.dto';
 import { TemperatureBetweenDto } from './dto/temperature-between.dto';
-import { ResponseStatus } from '../interfaces/response-status';
 import { MasterService } from '../master/master.service';
 import { ThermometerService } from './thermometer.service';
 import { THERMOMETER } from '../../../util/constants/swagger';
-import { RolesGuard } from '../../user/guards/roles.guard';
-import { UserRoles } from '../../user/enums/user-role';
-import { AuthGuard } from '../../user/guards/auth.guard';
+import { ResponseGeneric } from '../../types/response-generic';
+import { TemperatureGraphResponse } from './response/temperatuer-graph.response';
 
 @ApiTags(THERMOMETER)
 @ApiBearerAuth('access-token')
@@ -34,132 +34,143 @@ export class SlaveTemperatureController {
     private readonly thermometerService: ThermometerService,
   ) {}
 
+  @ApiExtraModels(TemperatureGraphResponse)
+  @ApiOkResponse({
+    description: '특정 시간의 온도 API',
+    schema: {
+      type: 'array',
+      items: { $ref: getSchemaPath(TemperatureGraphResponse) },
+    },
+  })
   @Post('temperature/between')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(AuthGuard)
   async getTemperatures(
     @Headers() header: any,
     @Res() res: Response,
     @Body() temperatureBetweenDto: TemperatureBetweenDto,
-  ) {
+  ): Promise<ResponseGeneric<TemperatureGraphResponse[]>> {
     try {
-      const { data } = await this.thermometerService.getTemperatures(
-        temperatureBetweenDto,
-      );
-      Logger.debug(`날짜 범위 온도: `, data);
-      Logger.log(data);
+      const temperatureGraphResponse =
+        await this.thermometerService.getTemperatures(temperatureBetweenDto);
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.OK).send(temperatureGraphResponse);
     } catch (e) {
-      const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
-        topic: 'temperature/between',
-        message: e.message,
-      };
-
-      return res.status(response.status).json(response);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: '현재 온도 API',
+    type: TemperatureGraphResponse,
+  })
   @Get('temperature/now')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(AuthGuard)
   async getCurrentTemperature(
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
-  ) {
+  ): Promise<ResponseGeneric<TemperatureGraphResponse>> {
     try {
-      const { data } = await this.thermometerService.getCurrentTemperature(
-        masterId,
-        slaveId,
-      );
+      const temperatureGraphResponse =
+        await this.thermometerService.getCurrentTemperature(masterId, slaveId);
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.OK).json(temperatureGraphResponse);
     } catch (e) {
-      const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
-        topic: ESlaveConfigTopic.THERMOMETER,
-        message: e.message,
-      };
-      return res.status(response.status).json(response);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
-  /** Todo: 재한이한테 URL 수정 알려주기 */
+  @ApiExtraModels(TemperatureGraphResponse)
+  @ApiOkResponse({
+    description: '일주일 간의 온도 API',
+    schema: {
+      type: 'array',
+      items: { $ref: getSchemaPath(TemperatureGraphResponse) },
+    },
+  })
   @Post('temperature/week')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(AuthGuard)
   async getTemperatureOneWeek(
     @Res() res: Response,
     @Body() temperatureBetweenDto: TemperatureBetweenDto,
-  ) {
-    const { data } = await this.thermometerService.getTemperatureOneWeek(
-      temperatureBetweenDto,
-    );
-    console.log(data);
-    return res.status(data.status).json(data);
+  ): Promise<ResponseGeneric<TemperatureGraphResponse[]>> {
+    try {
+      const temperatureGraphResponse =
+        await this.thermometerService.getTemperatureOneWeek(
+          temperatureBetweenDto,
+        );
+
+      return res.status(HttpStatus.OK).send(temperatureGraphResponse);
+    } catch (e) {
+      return res.status(e.statusCode).send(e.message);
+    }
   }
 
+  @ApiOkResponse({
+    description: '온도계 설정 API',
+    schema: { type: 'string', example: 'ok' },
+  })
   @Post('config')
-  @UseGuards(RolesGuard([UserRoles.ADMIN]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  // @UseGuards(AuthGuard)
   async setThermometerConfig(
     @Res() res: Response,
     @Body() thermometerConfigDto: ThermometerConfigDto,
-  ) {
+  ): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.thermometerService.setThermometerConfig(
-        thermometerConfigDto,
-      );
+      const thermometerConfig =
+        await this.thermometerService.setThermometerConfig(
+          thermometerConfigDto,
+        );
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.OK).send(thermometerConfig);
     } catch (e) {
-      const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
-        topic: ESlaveConfigTopic.THERMOMETER,
-        message: e.message,
-      };
-
-      return res.status(HttpStatus.BAD_REQUEST).json(response);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiExtraModels(TemperatureGraphResponse)
+  @ApiOkResponse({
+    description: '온도 생성 TEST API',
+    schema: {
+      type: 'array',
+      items: { $ref: getSchemaPath(TemperatureGraphResponse) },
+    },
+  })
   @Post('test/temperature')
   async createTestTemperatureData(
     @Headers() header: any,
+    @Res() res: Response,
     @Body() temperatureBetweenDto: TemperatureBetweenDto,
-  ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
+  ): Promise<ResponseGeneric<TemperatureGraphResponse[]>> {
     try {
-      const { data } = await this.thermometerService.createTestData(
-        temperatureBetweenDto,
-      );
-      // console.log(result);
-      // console.log(result.data.length);
+      const temperatureGraphResponse =
+        await this.thermometerService.createTestData(temperatureBetweenDto);
 
-      return data;
+      return res.status(HttpStatus.OK).send(temperatureGraphResponse);
     } catch (e) {
-      console.log(e);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: '온도계 DB 삭제 API',
+    schema: { type: 'string', example: '1' },
+  })
   @Delete('db')
-  async clearThermometerDB(@Res() res: Response, @Query('type') type: string) {
+  async clearThermometerDB(
+    @Res() res: Response,
+    @Query('type') type: string,
+  ): Promise<ResponseGeneric<any>> {
     try {
-      const { data } = await this.thermometerService.clearThermometerDB(type);
+      const result = await this.thermometerService.clearThermometerDB(type);
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'db clear completed',
-        data,
-      });
+      return res.status(HttpStatus.OK).send(result.affected.toString());
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 }

@@ -23,6 +23,8 @@ export class NotificationService {
   }
 
   ping() {
-    return lastValueFrom(this.httpService.get(this.requestUrl('')));
+    return lastValueFrom(this.httpService.get(this.requestUrl(''))).then(
+      (res) => res.data,
+    );
   }
 }

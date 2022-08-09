@@ -5,13 +5,11 @@ import {
   Delete,
   Get,
   Headers,
-  HttpException,
   HttpStatus,
   NotFoundException,
   Post,
   Req,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
@@ -24,73 +22,77 @@ import {
 } from '@nestjs/swagger';
 import { USER } from '../../util/constants/swagger';
 import { SendMessageDto } from './dto/send-message.dto';
-import { RolesGuard } from './guards/roles.guard';
-import { UserRoles } from './enums/user-role';
-import { AuthGuard } from './guards/auth.guard';
 import { TokensDto } from './dto/tokens.dto';
-import { AuthUserDto } from './dto/auth-user.dto';
 import { ValidateJwtDto } from './dto/validate-jwt.dto';
+import { ResponseGeneric } from '../types/response-generic';
+import { User } from './entities/user.entity';
 
 @ApiTags(USER)
 @Controller('api/user-service')
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @ApiCreatedResponse({ description: '회원 가입 API', type: User })
   @Post('signup')
-  @ApiCreatedResponse({ description: 'Sign up result example' })
   async signUp(
     @Req() req: Request,
     @Res() res: Response,
     @Body() createUserDto: CreateUserDto,
-  ) {
+  ): Promise<ResponseGeneric<User>> {
     try {
       const user = await this.userService.signUp(createUserDto);
       console.log('signup : ', user);
 
-      return res.send({
-        statusCode: HttpStatus.CREATED,
-        message: `success sign up`,
-      });
+      return res.status(HttpStatus.CREATED).send(user);
     } catch (e) {
-      throw new HttpException(
-        {
-          status: e.response.data.statusCode,
-          message: e.response.data.message,
-        },
-        e.response.data.statusCode,
-      );
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({ description: '회원 가입 API', type: User })
   @Get('me')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiBearerAuth('access-token')
-  async me(@Body() validateJwtDto: ValidateJwtDto) {
+  async me(
+    @Res() res: Response,
+    @Body() validateJwtDto: ValidateJwtDto,
+  ): Promise<ResponseGeneric<User>> {
     try {
       const { user } = validateJwtDto;
       // const me = this.userService.me();
-    } catch (e) {}
-  }
-
-  @Post('jwt')
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth('access-token')
-  async jwt(@Headers() header: any) {
-    try {
-      return true;
+      return res.status(HttpStatus.OK).send('me');
     } catch (e) {
-      throw new HttpException(
-        {
-          statusCode: e.response.data.statusCode,
-          message: e.response.data.message,
-        },
-        e.response.data.statusCode,
-      );
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: 'jwt 유효성 확인 API',
+    schema: { type: 'boolean', example: true },
+  })
+  @Post('jwt')
+  // @UseGuards(AuthGuard)
+  @ApiBearerAuth('access-token')
+  async jwt(
+    @Res() res: Response,
+    @Headers() header: any,
+  ): Promise<ResponseGeneric<boolean>> {
+    try {
+      return res.status(HttpStatus.OK).send(true);
+    } catch (e) {
+      return res.status(e.statusCode).send(e.message);
+    }
+  }
+
+  @ApiOkResponse({
+    description: 'jwt 재발급 API',
+    schema: { type: 'string', example: 'JWT ACCESS TOKEN' },
+  })
   @Post('refresh')
-  async refreshToken(@Req() req: Request, @Res() res: Response) {
+  async refreshToken(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<ResponseGeneric<string>> {
     const tokens = req.cookies['auth-cookie'];
     console.log('tokens : ', tokens);
     if (!tokens) {
@@ -98,79 +100,56 @@ export class UserController {
     }
 
     try {
-      const { data } = await this.userService.refresh(tokens);
+      const data = await this.userService.refresh(tokens);
       res.cookie(
         'auth-cookie',
         { userId: data.userId, refreshToken: data.refreshToken },
         { httpOnly: true, domain: process.env.COOKIE_DOMAIN },
       );
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'Jwt Is Refreshed',
-        accessToken: data.accessToken,
-      });
+      return res.status(HttpStatus.OK).send(data.accessToken);
     } catch (e) {
       res.clearCookie('auth-cookie', {
         httpOnly: true,
         domain: process.env.COOKIE_DOMAIN,
       });
 
-      throw new HttpException(
-        {
-          statusCode: e.response.data.statusCode,
-          message: e.response.data.message,
-        },
-        e.response.data.statusCode,
-      );
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: '로그인 API',
+    schema: { type: 'string', example: 'JWT ACCESS TOKEN' },
+  })
   @Post('signin')
-  @ApiOkResponse({ description: 'Login API', type: TokensDto })
   async signIn(
     @Req() req: Request,
     @Res() res: Response,
     @Body() signInDto: SignInDto,
-  ) {
+  ): Promise<ResponseGeneric<string>> {
     try {
-      const { accessToken, refreshToken, user }: TokensDto =
+      const { userId, accessToken, refreshToken }: TokensDto =
         await this.userService.signIn(signInDto);
 
       res.cookie(
         'auth-cookie',
-        { userId: user.id, refreshToken },
+        { userId, refreshToken },
         { httpOnly: true, domain: process.env.COOKIE_DOMAIN },
       );
 
-      return res.status(HttpStatus.CREATED).send(accessToken);
-
-      const response = {
-        statusCode: HttpStatus.OK,
-        message: 'signin completed',
-        payload: accessToken,
-      };
-
-      return res.send(response);
+      return res.status(HttpStatus.OK).send(accessToken);
     } catch (e) {
-      console.log(`API Gateway Exception: `, e);
-      throw new HttpException(
-        // {
-        //   statusCode: e.response.data.statusCode,
-        //   message: e.response.data.message,
-        // },
-        // e.response.data.statusCode,
-        {
-          statusCode: e,
-          message: e,
-        },
-        e,
-      );
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({ description: '로그아웃 API' })
   @Get('signout')
-  async signOut(@Req() req: Request, @Res() res: Response) {
+  async signOut(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<ResponseGeneric<string>> {
     const tokens = req.cookies['auth-cookie'];
     console.log(`cookie : `, tokens);
     if (!tokens) {
@@ -178,44 +157,45 @@ export class UserController {
     }
 
     try {
-      const { data } = await this.userService.signOut(tokens.userId);
+      const result = await this.userService.signOut(tokens.userId);
       res.clearCookie('auth-cookie', {
         httpOnly: true,
         domain: process.env.COOKIE_DOMAIN,
       });
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'signout completed',
-      });
+      return res.status(HttpStatus.OK).send(result);
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({ description: '텔레그램 메세지 전송 API', type: String })
   @Post('message')
-  async sendMessage(@Body() sendMessageDto: SendMessageDto) {
+  async sendMessage(
+    @Res() res: Response,
+    @Body() sendMessageDto: SendMessageDto,
+  ): Promise<ResponseGeneric<any>> {
     try {
-      const { data } = await this.userService.sendMessage(sendMessageDto);
+      const result = await this.userService.sendMessage(sendMessageDto);
 
-      return data;
+      return res.status(HttpStatus.OK).send(result);
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: '사용자 DB 삭제 API',
+    schema: { type: 'string', example: '0' },
+  })
   @Delete('db')
-  async clearUserDB(@Res() res: Response) {
+  async clearUserDB(@Res() res: Response): Promise<ResponseGeneric<any>> {
     try {
-      const { data } = await this.userService.clearUserDB();
+      const result = await this.userService.clearUserDB();
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'db clear completed',
-        data,
-      });
+      return res.status(HttpStatus.OK).send(result.affected.toString());
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 }

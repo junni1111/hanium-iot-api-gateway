@@ -8,16 +8,19 @@ import {
   Post,
   Query,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateMasterDto } from './dto/create-master.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MasterService } from './master.service';
 import { MASTER } from '../../../util/constants/swagger';
-import { AuthGuard } from 'src/api/user/guards/auth.guard';
-import { RolesGuard } from '../../user/guards/roles.guard';
-import { UserRoles } from '../../user/enums/user-role';
+import { ResponseGeneric } from '../../types/response-generic';
+import { Master } from './entities/master.entity';
 
 @ApiTags(MASTER)
 @ApiBearerAuth('access-token')
@@ -25,56 +28,61 @@ import { UserRoles } from '../../user/enums/user-role';
 export class MasterController {
   constructor(private readonly masterService: MasterService) {}
 
+  @ApiCreatedResponse({ description: 'MASTER 생성 API', type: Master })
   @Post()
-  @UseGuards(RolesGuard([UserRoles.ADMIN]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  // @UseGuards(AuthGuard)
   async createMaster(
     @Res() res: Response,
     @Body() createMasterDto: CreateMasterDto,
-  ) {
+  ): Promise<ResponseGeneric<Master>> {
     const user = createMasterDto?.user;
     console.log(`DTO User: `, user);
 
     try {
-      const { data } = await this.masterService.createMaster(createMasterDto);
+      const master = await this.masterService.createMaster(createMasterDto);
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.CREATED).send(master);
     } catch (e) {
-      console.log(e);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
   /* TODO: Make Polling DTO*/
+  @ApiOkResponse({
+    description: 'MASTER POLLING API',
+    schema: { type: 'string', example: 'on' },
+  })
   @Get('state')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(AuthGuard)
   async getMasterState(
     @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
-  ) {
+  ): Promise<ResponseGeneric<string>> {
     try {
       console.log(`Call Polling `, masterId);
-      const { data } = await this.masterService.getMasterState(masterId);
+      const pollingResult = await this.masterService.getMasterState(masterId);
 
-      return res.status(HttpStatus.OK).json(data);
+      return res.status(HttpStatus.OK).send(pollingResult);
     } catch (e) {
-      return e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: 'MASTER DB 삭제 API',
+    schema: { type: 'string', example: '1' },
+  })
   @Delete('db')
-  async clearMasterDB(@Res() res: Response) {
+  async clearMasterDB(@Res() res: Response): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.masterService.clearMasterDB();
+      const result = await this.masterService.clearMasterDB();
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'db clear completed',
-        data,
-      });
+      return res.status(HttpStatus.OK).send(result.affected.toString());
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 }

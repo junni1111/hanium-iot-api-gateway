@@ -5,21 +5,19 @@ import {
   Get,
   Headers,
   HttpStatus,
-  NotFoundException,
   Post,
   Query,
   Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { ESlaveConfigTopic, ESlaveState } from '../../../util/api-topic';
 import { LedConfigDto } from './dto/led-config.dto';
 import { LedStateDto } from './dto/led-state.dto';
 import { LedPowerDto } from './dto/led-power.dto';
-import { ResponseStatus } from '../interfaces/response-status';
 import { LedService } from './led.service';
 import { MasterService } from '../master/master.service';
 import { LED } from '../../../util/constants/swagger';
+import { ResponseGeneric } from '../../types/response-generic';
 
 @ApiTags(LED)
 @ApiBearerAuth('access-token')
@@ -30,100 +28,79 @@ export class SlaveLedController {
     private readonly ledService: LedService,
   ) {}
 
-  @ApiOkResponse()
+  @ApiOkResponse({
+    description: 'LED 전원 상태 API',
+    schema: { type: 'string', example: 'on' },
+  })
   @Get('state')
   async getLedState(
     @Headers() header: any,
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
-  ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
+  ): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.ledService.getLedState(
+      const ledState = await this.ledService.getLedState(
         new LedStateDto(masterId, slaveId),
       );
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.OK).send(ledState);
     } catch (e) {
-      const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
-        topic: ESlaveState.LED,
-        message: `slave state exception`,
-      };
-
-      return res.status(response.status).json(response);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
-  @ApiOkResponse()
+  @ApiOkResponse({
+    description: 'LED 설정 API',
+    schema: { type: 'string', example: 'ok' },
+  })
   @Post('config')
   async setLedConfig(
     @Headers() header: any,
     @Res() res: Response,
     @Body() ledConfigDto: LedConfigDto,
-  ) {
-    // const jwt = header['authorization']?.split(' ')[1];
-    // if (!jwt) {
-    //   throw new NotFoundException('Jwt Not Found');
-    // }
-
-    console.log(`Call led config`);
+  ): Promise<ResponseGeneric<string>> {
     try {
-      console.log(`call led config`);
-      console.log(ledConfigDto);
-      const data = await this.ledService.setLedConfig(ledConfigDto);
+      const ledConfig = await this.ledService.setLedConfig(ledConfigDto);
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.OK).send(ledConfig);
     } catch (e) {
-      console.log(`catch led config error : `, e);
-      const response: ResponseStatus = {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        topic: ESlaveConfigTopic.LED,
-        message: e.message,
-      };
-
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(response);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
-  @ApiOkResponse()
+  @ApiOkResponse({
+    description: 'LED 전원 상태 변경 API',
+    schema: { type: 'string', example: 'on' },
+  })
   @Post('config/power')
   async setPowerConfig(
     @Headers() header: any,
     @Res() res: Response,
     @Body() ledPowerDto: LedPowerDto,
-  ) {
-    const jwt = header['authorization']?.split(' ')[1];
-    if (!jwt) {
-      throw new NotFoundException('Jwt Not Found');
-    }
-
+  ): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.ledService.turnLed(ledPowerDto);
-      return res.status(data.status).json(data);
+      const ledPower = await this.ledService.turnLed(ledPowerDto);
+
+      return res.status(HttpStatus.OK).send(ledPower);
     } catch (e) {
       console.log(e);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: 'LED DB 삭제 API',
+    schema: { type: 'string', example: '1' },
+  })
   @Delete('db')
-  async clearLedDB(@Res() res: Response) {
+  async clearLedDB(@Res() res: Response): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.ledService.clearLedDB();
+      const result = await this.ledService.clearLedDB();
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'db clear completed',
-        data,
-      });
+      return res.status(HttpStatus.OK).send(result.affected.toString());
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 }

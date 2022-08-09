@@ -10,7 +10,7 @@ export class SlavePowerDto {
   @IsNumber()
   readonly slaveId: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'on' })
   @IsString()
   @IsIn(['on', 'off'], {
     message: `'powerState' is not 'on' or 'off'`,

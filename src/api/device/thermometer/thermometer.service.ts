@@ -12,57 +12,57 @@ export class ThermometerService {
     private readonly httpService: HttpService,
   ) {}
 
-  async getTemperatures(temperatureBetweenDto: TemperatureBetweenDto) {
+  getTemperatures(temperatureBetweenDto: TemperatureBetweenDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('temperature/between'),
         temperatureBetweenDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async getTemperatureOneWeek(temperatureBetweenDto: TemperatureBetweenDto) {
+  getTemperatureOneWeek(temperatureBetweenDto: TemperatureBetweenDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('temperature/week'),
         temperatureBetweenDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async getCurrentTemperature(masterId: number, slaveId: number) {
+  getCurrentTemperature(masterId: number, slaveId: number) {
     return lastValueFrom(
       this.httpService.get(
         this.deviceMicroservice.requestUrl('temperature/now'),
         { params: { masterId, slaveId } },
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async createTestData(temperatureBetweenDto: TemperatureBetweenDto) {
+  createTestData(temperatureBetweenDto: TemperatureBetweenDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('temperature/test'),
         temperatureBetweenDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async setThermometerConfig(thermometerConfigDto: ThermometerConfigDto) {
+  setThermometerConfig(thermometerConfigDto: ThermometerConfigDto) {
     return lastValueFrom(
       this.httpService.post(
         this.deviceMicroservice.requestUrl('temperature/config'),
         thermometerConfigDto,
       ),
-    );
+    ).then((res) => res.data);
   }
 
-  async clearThermometerDB(type: string) {
+  clearThermometerDB(type: string) {
     return lastValueFrom(
       this.httpService.delete(
         this.deviceMicroservice.requestUrl('temperature/db'),
         { params: { type } },
       ),
-    );
+    ).then((res) => res.data);
   }
 }

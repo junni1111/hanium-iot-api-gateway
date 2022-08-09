@@ -3,27 +3,20 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpStatus,
-  NotFoundException,
   Post,
   Query,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { ESlaveConfigTopic, ESlaveState } from 'src/util/api-topic';
 import { WaterPumpConfigDto } from './dto/water-pump-config.dto';
 import { WaterPumpStateDto } from './dto/water-pump-state.dto';
 import { WaterPumpPowerDto } from './dto/water-pump-power.dto';
-import { ResponseStatus } from '../interfaces/response-status';
 import { MasterService } from '../master/master.service';
 import { WaterPumpService } from './water-pump.service';
 import { WATER_PUMP } from '../../../util/constants/swagger';
-import { RolesGuard } from '../../user/guards/roles.guard';
-import { UserRoles } from '../../user/enums/user-role';
-import { AuthGuard } from '../../user/guards/auth.guard';
+import { ResponseGeneric } from '../../types/response-generic';
 
 @ApiTags(WATER_PUMP)
 @ApiBearerAuth('access-token')
@@ -34,86 +27,85 @@ export class SlaveWaterPumpController {
     private readonly waterPumpService: WaterPumpService,
   ) {}
 
-  @ApiOkResponse()
+  @ApiOkResponse({
+    description: '물펌프 전원 상태 API',
+    schema: { type: 'string', example: 'on' },
+  })
   @Get('state')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(AuthGuard)
   async getWaterPumpState(
     @Res() res: Response,
     @Query('master_id') masterId: number,
     @Query('slave_id') slaveId: number,
-  ) {
+  ): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.waterPumpService.getWaterPumpState(
+      const waterPumpState = await this.waterPumpService.getWaterPumpState(
         new WaterPumpStateDto(masterId, slaveId),
       );
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.OK).send(waterPumpState);
     } catch (e) {
-      const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
-        topic: ESlaveState.WATER_PUMP,
-        message: `slave state exception`,
-      };
-
-      return res.status(response.status).json(response);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: '물펌프 설정 API',
+    schema: { type: 'string', example: 'ok' },
+  })
   @Post('config')
-  @UseGuards(RolesGuard([UserRoles.ADMIN]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  // @UseGuards(AuthGuard)
   async setWaterPumpConfig(
     @Res() res: Response,
     @Body() waterConfigDto: WaterPumpConfigDto,
-  ) {
+  ): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.waterPumpService.setWaterPumpConfig(
+      const waterPumpConfig = await this.waterPumpService.setWaterPumpConfig(
         waterConfigDto,
       );
 
-      return res.status(data.status).json(data);
+      return res.status(HttpStatus.OK).send(waterPumpConfig);
     } catch (e) {
-      const response: ResponseStatus = {
-        status: HttpStatus.BAD_REQUEST,
-        topic: ESlaveConfigTopic.WATER_PUMP,
-        message: e.message,
-      };
-
-      return res.status(HttpStatus.BAD_REQUEST).json(response);
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: '물펌프 전원 상태 변경 API',
+    schema: { type: 'string', example: 'on' },
+  })
   @Post('config/power')
-  @UseGuards(RolesGuard([UserRoles.ADMIN]))
-  @UseGuards(AuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN]))
+  // @UseGuards(AuthGuard)
   async setPowerWaterPump(
     @Res() res: Response,
     @Body() waterPumpPowerDto: WaterPumpPowerDto,
-  ) {
+  ): Promise<ResponseGeneric<string>> {
     try {
-      const { data } = await this.waterPumpService.turnWaterPump(
+      const waterPumpPower = await this.waterPumpService.turnWaterPump(
         waterPumpPowerDto,
       );
-      return res.status(data.status).json(data);
+
+      return res.status(HttpStatus.OK).send(waterPumpPower);
     } catch (e) {
-      console.log(e);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ result: e });
+      return res.status(e.statusCode).send(e.message);
     }
   }
 
+  @ApiOkResponse({
+    description: '물펌프 DB 삭제 API',
+    schema: { type: 'string', example: '1' },
+  })
   @Delete('db')
-  async clearWaterPumpDB(@Res() res: Response) {
+  async clearWaterPumpDB(@Res() res: Response): Promise<ResponseGeneric<any>> {
     try {
-      const { data } = await this.waterPumpService.clearWaterPumpDB();
+      const result = await this.waterPumpService.clearWaterPumpDB();
 
-      return res.send({
-        statusCode: HttpStatus.OK,
-        message: 'db clear completed',
-        data,
-      });
+      return res.status(HttpStatus.OK).send(result.affected.toString());
     } catch (e) {
-      throw e;
+      return res.status(e.statusCode).send(e.message);
     }
   }
 }
