@@ -18,7 +18,6 @@ export class NotificationService {
       'NOTIFICATION_PORT_10000_TCP_PORT',
       10000,
     );
-    console.log('notification : ', NOTIFICATION_HOST, NOTIFICATION_PORT);
     return `http://${NOTIFICATION_HOST}:${NOTIFICATION_PORT}/${url}`;
   }
 
