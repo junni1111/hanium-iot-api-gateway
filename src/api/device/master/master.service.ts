@@ -20,7 +20,7 @@ export class MasterService {
   }
 
   ping() {
-    return lastValueFrom(this.httpService.get(this.requestUrl('/ping'))).then(
+    return lastValueFrom(this.httpService.get(this.requestUrl('ping'))).then(
       (res) => res.data,
     );
   }
