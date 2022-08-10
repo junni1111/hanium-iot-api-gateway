@@ -103,6 +103,9 @@ export class SlaveLedController {
       return res.status(HttpStatus.OK).send(result.affected.toString());
     } catch ({ response: { data: e } }) {
       console.log('error : ', e);
+      if (e.statusCode === 500) {
+        e.message = 'DELETE SLAVE DB FIRST';
+      }
       return res.status(e.statusCode).send(e);
     }
   }
