@@ -38,8 +38,9 @@ export class SlaveFanController {
       const fanPower = await this.fanService.turnFan(fanPowerDto);
 
       return res.status(HttpStatus.OK).send(fanPower);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -52,9 +53,10 @@ export class SlaveFanController {
     try {
       const result = await this.fanService.clearFanDB();
 
-      return res.status(HttpStatus.OK).send(result.affected.toString());
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+      return res.status(HttpStatus.OK).send(result);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 }

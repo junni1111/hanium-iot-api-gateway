@@ -44,8 +44,9 @@ export class UserController {
       console.log('signup : ', user);
 
       return res.status(HttpStatus.CREATED).send(user);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -61,8 +62,9 @@ export class UserController {
       const { user } = validateJwtDto;
       // const me = this.userService.me();
       return res.status(HttpStatus.OK).send('me');
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -79,8 +81,9 @@ export class UserController {
   ): Promise<ResponseGeneric<boolean>> {
     try {
       return res.status(HttpStatus.OK).send(true);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -108,13 +111,14 @@ export class UserController {
       );
 
       return res.status(HttpStatus.OK).send(data.accessToken);
-    } catch (e) {
+    } catch ({ response: { data: e } }) {
       res.clearCookie('auth-cookie', {
         httpOnly: true,
         domain: process.env.COOKIE_DOMAIN,
       });
 
-      return res.status(e.statusCode).send(e.message);
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -139,8 +143,9 @@ export class UserController {
       );
 
       return res.status(HttpStatus.OK).send(accessToken);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -164,8 +169,9 @@ export class UserController {
       });
 
       return res.status(HttpStatus.OK).send(result);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -179,8 +185,9 @@ export class UserController {
       const result = await this.userService.sendMessage(sendMessageDto);
 
       return res.status(HttpStatus.OK).send(result);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -194,8 +201,9 @@ export class UserController {
       const result = await this.userService.clearUserDB();
 
       return res.status(HttpStatus.OK).send(result.affected.toString());
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 }

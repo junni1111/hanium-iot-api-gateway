@@ -45,8 +45,9 @@ export class SlaveWaterPumpController {
       );
 
       return res.status(HttpStatus.OK).send(waterPumpState);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -67,8 +68,9 @@ export class SlaveWaterPumpController {
       );
 
       return res.status(HttpStatus.OK).send(waterPumpConfig);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -89,8 +91,9 @@ export class SlaveWaterPumpController {
       );
 
       return res.status(HttpStatus.OK).send(waterPumpPower);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -104,8 +107,9 @@ export class SlaveWaterPumpController {
       const result = await this.waterPumpService.clearWaterPumpDB();
 
       return res.status(HttpStatus.OK).send(result.affected.toString());
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 }

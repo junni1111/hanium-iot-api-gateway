@@ -48,8 +48,9 @@ export class SlaveController {
       const slave = await this.slaveService.createSlave(createSlaveDto);
 
       return res.status(HttpStatus.CREATED).send(slave);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -71,8 +72,9 @@ export class SlaveController {
         new SlaveStateDto(masterId, slaveId),
       );
       return res.status(HttpStatus.OK).send(slaveStateResponse);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -96,8 +98,9 @@ export class SlaveController {
       );
 
       return res.status(HttpStatus.OK).send(slaveConfigResponse);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -111,8 +114,9 @@ export class SlaveController {
       const result = await this.slaveService.clearSlaveDB();
 
       return res.status(HttpStatus.OK).send(result.affected.toString());
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 }

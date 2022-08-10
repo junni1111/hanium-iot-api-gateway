@@ -45,8 +45,9 @@ export class SlaveLedController {
       );
 
       return res.status(HttpStatus.OK).send(ledState);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -64,8 +65,9 @@ export class SlaveLedController {
       const ledConfig = await this.ledService.setLedConfig(ledConfigDto);
 
       return res.status(HttpStatus.OK).send(ledConfig);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -83,9 +85,9 @@ export class SlaveLedController {
       const ledPower = await this.ledService.turnLed(ledPowerDto);
 
       return res.status(HttpStatus.OK).send(ledPower);
-    } catch (e) {
-      console.log(e);
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -99,8 +101,9 @@ export class SlaveLedController {
       const result = await this.ledService.clearLedDB();
 
       return res.status(HttpStatus.OK).send(result.affected.toString());
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 }

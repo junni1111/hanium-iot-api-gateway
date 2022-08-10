@@ -22,8 +22,9 @@ export class UtilityController {
       console.log(`Ping Auth Microservice Result: `, result);
 
       return res.status(HttpStatus.OK).send(result);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 }

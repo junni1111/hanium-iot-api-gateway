@@ -43,8 +43,9 @@ export class MasterController {
       const master = await this.masterService.createMaster(createMasterDto);
 
       return res.status(HttpStatus.CREATED).send(master);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -66,8 +67,9 @@ export class MasterController {
       const pollingResult = await this.masterService.getMasterState(masterId);
 
       return res.status(HttpStatus.OK).send(pollingResult);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -81,8 +83,9 @@ export class MasterController {
       const result = await this.masterService.clearMasterDB();
 
       return res.status(HttpStatus.OK).send(result.affected.toString());
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 }

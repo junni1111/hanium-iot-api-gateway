@@ -55,8 +55,9 @@ export class SlaveTemperatureController {
         await this.thermometerService.getTemperatures(temperatureBetweenDto);
 
       return res.status(HttpStatus.OK).send(temperatureGraphResponse);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -77,8 +78,9 @@ export class SlaveTemperatureController {
         await this.thermometerService.getCurrentTemperature(masterId, slaveId);
 
       return res.status(HttpStatus.OK).json(temperatureGraphResponse);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -104,8 +106,9 @@ export class SlaveTemperatureController {
         );
 
       return res.status(HttpStatus.OK).send(temperatureGraphResponse);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -127,8 +130,9 @@ export class SlaveTemperatureController {
         );
 
       return res.status(HttpStatus.OK).send(thermometerConfig);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -151,8 +155,9 @@ export class SlaveTemperatureController {
         await this.thermometerService.createTestData(temperatureBetweenDto);
 
       return res.status(HttpStatus.OK).send(temperatureGraphResponse);
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 
@@ -169,8 +174,9 @@ export class SlaveTemperatureController {
       const result = await this.thermometerService.clearThermometerDB(type);
 
       return res.status(HttpStatus.OK).send(result.affected.toString());
-    } catch (e) {
-      return res.status(e.statusCode).send(e.message);
+    } catch ({ response: { data: e } }) {
+      console.log('error : ', e);
+      return res.status(e.statusCode).send(e);
     }
   }
 }
