@@ -29,7 +29,7 @@ export class UserService {
   }
 
   ping() {
-    return lastValueFrom(this.httpService.get(this.requestUrl(''))).then(
+    return lastValueFrom(this.httpService.get(this.requestUrl('ping'))).then(
       (res) => res.data,
     );
   }

@@ -1,7 +1,7 @@
 import {
-  SwaggerModule,
   DocumentBuilder,
   SwaggerCustomOptions,
+  SwaggerModule,
 } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
 import { LED, MASTER, THERMOMETER, WATER_PUMP } from './constants/swagger';
@@ -15,7 +15,7 @@ const swaggerCustomOptions: SwaggerCustomOptions = {
 export const setupSwagger = (app: INestApplication): void => {
   const options = new DocumentBuilder()
     .setTitle('IoT Gateway API')
-    .setDescription('IoT Microservice API 문서입니다')
+    .setDescription('IoT Gateway API 문서입니다')
     .setVersion('1.0.14')
     .addTag(MASTER)
     .addTag(THERMOMETER)
