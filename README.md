@@ -17,7 +17,7 @@
 
 ### Download from repository
 
-<pre>git clone https://github.com/KGESH/hanium-iot-api-gateway.git</pre>
+<pre>git clone https://github.com/junni1111/hanium-iot-api-gateway.git</pre>
 
 ### Go to download path
 
